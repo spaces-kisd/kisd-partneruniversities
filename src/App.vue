@@ -1,22 +1,19 @@
 <template>
   <div id="my-app" class="page-wrapper">
-    <transition
-      name="loader-animation"
-      enter-active-class="animated fadeIn"
-      leave-active-class="animated fadeOut">
+    <transition name="loader-animation" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
       <div class="progress loader" v-if="showLoader">
         <div class="progress-bar" role="progressbar" :style="loaderStyle" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
       </div>
     </transition>
 
-    <app-header></app-header>
+    <!--<app-header></app-header>-->
 
     <transition name="page-transition" mode="out-in" appear>
       <div class="page-content-wrapper">
         <router-view></router-view>
       </div>
     </transition>
-
+    <app-solution-map></app-solution-map>
     <app-footer></app-footer>
   </div>
 </template>
@@ -25,6 +22,11 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Header from './components/partials/Header'
 import Footer from './components/partials/Footer'
+import SolutionMap from './components/partials/SolutionMap'
+//import VueAwesomeSwiper from 'vue-awesome-swiper'
+
+
+import 'swiper/dist/css/swiper.css'
 
 export default {
   data() {
@@ -45,7 +47,8 @@ export default {
 
   components: {
     appHeader: Header,
-    appFooter: Footer
+    appFooter: Footer,
+    appSolutionMap: SolutionMap
   },
 
   watch: {
@@ -63,4 +66,5 @@ export default {
 </script>
 <style lang="scss">
   @import './styles/app.scss';
+  //@import '../../node_modules/mapbox-gl/dist/mapbox-gl.css"';
 </style>

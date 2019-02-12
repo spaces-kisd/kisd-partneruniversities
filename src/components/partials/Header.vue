@@ -3,7 +3,7 @@
 
         <b-nav-toggle target="nav_collapse"></b-nav-toggle>
 
-        <b-navbar-brand to="/">Vuejs Wordpress Theme Starter</b-navbar-brand>
+        <b-navbar-brand to="/">Vuejs Wordpress Theme</b-navbar-brand>
 
         <b-collapse is-nav id="nav_collapse">
 
