@@ -22,7 +22,7 @@ const getters = {
 
 // actions
 const actions = {
-  getPosts ({ commit }, { limit }) {
+  getPosts ({ commit }, { limit }, type = 'post') {
     api.getPosts(limit, posts => {
       commit(types.STORE_FETCHED_POSTS, { posts })
       commit(types.POSTS_LOADED, true)

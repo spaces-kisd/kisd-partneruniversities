@@ -31,7 +31,8 @@ export default {
   },
 
   getPosts (limit, cb) {
-    if (_.isEmpty(limit)) { let limit = 5 }
+    this.getPostType('posts', limit, cb);
+    /* if (_.isEmpty(limit)) { let limit = 5 }
     
     axios.get(window.SETTINGS.API_BASE_PATH + 'posts?per_page='+limit)
       .then(response => {
@@ -39,6 +40,40 @@ export default {
       })
       .catch(e => {
         cb(e)
+      }) */
+  },
+  getPost (id, cb) {
+    if (_.isNull(id) || !_.isNumber(id)) return false
+    axios.get(window.SETTINGS.API_BASE_PATH + 'posts/'+id)
+      .then(response => {
+        cb(response.data)
+      })
+      .catch(e => {
+        cb(e)
       })
   },
+
+  getPostType(name, limit, cb) {
+    if (_.isEmpty(limit)) { let limit = 5 }
+    let base_url = window.location.protocol + "//" + window.location.host + "/";
+    axios.get(window.SETTINGS.API_BASE_PATH + name + '?per_page='+limit)
+      .then(response => {
+        //response.data.link_relative = response.data.link.replace(base_url, '');
+        //console.log(response.data.link);
+        cb(response.data)
+      })
+      .catch(e => {
+        cb(e)
+      })
+  },
+
+  getFeatureCollection( cb ) {
+    axios.get("/wp-json/map/v1/features/solution").then(response => {
+      console.log('api features', response.data)
+      cb(response.data)
+    })
+    .catch(e => {
+      cb(e)
+    })
+  }
 }

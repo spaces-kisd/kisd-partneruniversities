@@ -1,6 +1,7 @@
 try {
   window._ = require('lodash');
   window.$ = window.jQuery = require('jquery');
+  window.mapboxgl  = require('mapbox-gl');
   window.axios = require('axios');
   window.axios.defaults.headers.common = {
     'X-CSRF-TOKEN': window.WordPress.csrfToken,

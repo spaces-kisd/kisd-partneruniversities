@@ -29,4 +29,6 @@ mix.setPublicPath('dist')
    .options({
       processCssUrls: false
     })
-   .version();
+   .version()
+   //.browserSync('wp.local')
+   .disableSuccessNotifications();

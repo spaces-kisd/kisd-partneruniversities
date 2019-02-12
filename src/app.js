@@ -23,6 +23,8 @@ import App from './App.vue'
 import store from './store'
 import * as types from './store/mutation-types'
 
+
+
 Vue.use(VueLazyload)
 Vue.use(BootstrapVue)
 
@@ -34,6 +36,18 @@ router.afterEach((to, from) => {
   $("body").addClass("vue--page--"+_.toLower(to.name))
 })
 
+import VueMaterial from 'vue-material'
+import 'vue-material/dist/vue-material.min.css'
+import 'vue-material/dist/theme/default.css'
+
+Vue.use(VueMaterial)
+
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+
+// require styles
+import 'swiper/dist/css/swiper.css'
+
+Vue.use(VueAwesomeSwiper, /* { default global options } */)
 
 new Vue({
   el: '#app',
