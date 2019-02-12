@@ -1,3 +1,5 @@
+import axios from "axios";
+
 try {
   window._ = require('lodash');
   window.$ = window.jQuery = require('jquery');
@@ -7,4 +9,11 @@ try {
     'X-CSRF-TOKEN': window.WordPress.csrfToken,
     'X-Requested-With': 'XMLHttpRequest'
   };
-} catch (e) {}
+  axios.defaults.headers.common = {
+    "X-CSRF-TOKEN":
+      typeof window.WordPress !== "undefined" ? window.WordPress.csrfToken : "",
+    "X-Requested-With": "XMLHttpRequest"
+  };
+} catch (e) {
+  console.log(e);
+}
