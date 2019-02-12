@@ -21,8 +21,10 @@
 
 <script>
 // @see https://vuematerial.io/components/card/
+import axios from "axios";
 import Loader from "../partials/Loader.vue";
 import { mapGetters } from "vuex";
+import SETTINGS from "../../settings";
 
 export default {
   data() {
@@ -55,15 +57,8 @@ export default {
         });
     }
   },
-
   components: {
     Loader
   }
 };
 </script>
-<style lang="scss">
-.md-card.post {
-  max-width: 800px;
-  margin: 20px;
-}
-</style>

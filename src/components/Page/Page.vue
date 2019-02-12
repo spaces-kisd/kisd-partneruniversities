@@ -35,7 +35,7 @@ export default {
     }),
 
     pageContent() {
-      return this.page(this.$route.params.pageSlug)
+      return this.page(this.$route.params.pageSlug);
     }
   },
 
@@ -44,7 +44,3 @@ export default {
   }
 };
 </script>
-
-<style >
-
-</style>

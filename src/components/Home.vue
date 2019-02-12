@@ -7,10 +7,10 @@
 </template>
 
 <script>
-import RecentPostsWidget from './widgets/RecentPosts'
-import PagesWidget from './widgets/Pages'
-import Swiper from './partials/Swiper'
-import DialogCustom from './partials/Dialog'
+import RecentPostsWidget from './widgets/RecentPosts.vue';
+import PagesWidget from './widgets/Pages.vue';
+import Swiper from './partials/Swiper.vue';
+import DialogCustom from './partials/Dialog.vue';
 //import SolutionMap from './partials/SolutionMap'
 
 export default {
@@ -22,9 +22,3 @@ export default {
     }
 }
 </script>
-
-<style lang="scss">
-    .jumbotron {
-        margin-top: 5%;
-    }
-</style>
