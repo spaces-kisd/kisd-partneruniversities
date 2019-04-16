@@ -1,24 +1,22 @@
 <template>
-    <div>
-        welcome home!
-        <DialogCustom></DialogCustom>
-        <swiper></swiper>
-    </div>
+    <div></div>
 </template>
-
 <script>
-import RecentPostsWidget from './widgets/RecentPosts.vue';
-import PagesWidget from './widgets/Pages.vue';
-import Swiper from './partials/Swiper.vue';
-import DialogCustom from './partials/Dialog.vue';
-//import SolutionMap from './partials/SolutionMap'
+/**
+ * This just supports a route to show the drawer.
+ * This way we can close the drawer with a link.
+ */
+import { mapGetters, mapActions, mapMutations } from "vuex";
+import * as types from "../store/mutation-types";
 
 export default {
-    components: {
-        RecentPostsWidget,
-        PagesWidget,
-        Swiper,
-        DialogCustom
+    mounted(){
+       //console.log('mount home');
+        this.$store.commit(types.VISIBLE_DRAWER, true);
+    },
+    beforeDestroy(){
+        this.$store.commit(types.VISIBLE_DRAWER, false);
+        this.$store.commit(types.VISIBLE_SINGLE, false);
     }
 }
 </script>

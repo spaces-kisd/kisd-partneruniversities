@@ -3,50 +3,108 @@
 </template>
 
 <script>
+import axios from "axios";
+/* import mapboxgl from "mapbox-gl";
+window.mapboxgl = mapboxgl; */
 import MapConfig from "./SolutionMapHelper.js";
+import { mapGetters, mapState, mapMutations } from "vuex";
+import * as types from "../../store/mutation-types";
+
 export default {
   data() {
     return {
-      post: false
+      post: false,
+      myMap: false
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters([
+      "getSelected",
+      "visible_single",
+      "getSelectedFeature"
+    ])
+  },
   mounted() {
-    //this.$store.dispatch('getFeatures')
     var sourceData = [];
-    var myMap = MapConfig.init();
+    this.myMap = MapConfig.init();
+    // disable map rotation using right click + drag
+    this.myMap.dragRotate.disable();
+    // disable map rotation using touch rotation gesture
+    this.myMap.touchZoomRotate.disableRotation();
+    this.myMap.addControl(
+      new mapboxgl.NavigationControl({
+        showCompass: false,
+        position: "top-right" //todo: add mediaquery to hide on mobile.
+      })
+    );
+    let added = false;
+    var comp = this;
+    /* var types = types; */
+    comp.myMap.on("sourcedata", sourceCallback);
 
     axios.get("/wp-json/map/v1/features/solution").then(response => {
       sourceData = response.data;
-      myMap.on("sourcedata", sourceCallback);
-      MapConfig.addData(myMap, sourceData);
-      MapConfig.addEvents(myMap);
-
-      console.log(sourceData)
-    });
-
-    //myMap.on("load", function() {});
-    //myMap.once("style.load", ev => {});
-    myMap.on("moveend", function() {
-      console.log('mv', MapConfig.getAllVisible(myMap));
-      //console.log("moveend");
-      /*         if (map.isFullyLoaded()) {
-            renderSidebar();
-          } */
+      sourceCallback();
     });
 
     function sourceCallback(e) {
-      //console.log(e);
-      // assuming 'map' is defined globally, or you can use 'this'
-      if (myMap.getSource("solutions") && e.isSourceLoaded) {
-        console.log('loaded source', MapConfig.getAllVisible(myMap));
-        //console.log(myMap.getSource("solutions"));
-        //console.log(myMap.querySourceFeatures('solutions', {filter : ''}));
+      if (comp.myMap.isStyleLoaded() && !added && !_.isEmpty(sourceData)) {
+        added = true;
+        MapConfig.addData(comp.myMap, sourceData);
+        MapConfig.addEvents(comp.myMap);
+        comp.myMap.on("click", "unclustered-point", function(e) {
+          //console.log("soluton_map commit", e.features[0].properties);
+          comp.$store.commit(
+            types.FEATURE_SELECTED,
+            e.features[0].properties.feature_id
+          );
+          comp.$router.push(e.features[0].properties.link_relative);
+        });
+      }
+
+      if (comp.myMap.getSource("solutions") && comp.myMap.isSourceLoaded) {
+        //console.log('loaded source', MapConfig.getAllVisible(comp.myMap));
+        //console.log(this.myMap.getSource("solutions"));
+        //console.log(this.myMap.querySourceFeatures('solutions', {filter : ''}));
       }
     }
+
+    this.myMap.on("moveend", function() {
+/*       if (comp.myMap) {
+        MapConfig.getAllVisible(comp.myMap).then( function( features ) {
+          comp.$store.commit(types.STORE_VISIBLE_FEATURES, features );
+        });
+      } */
+    });
   },
   beforeMount() {
     //this.getPost();
+  },
+  watch: {
+    getSelected(newValue, oldValue) {
+      //console.log("watch feature", newValue);
+      //console.log(this.myMap);
+      /*       this.myMap.easeTo({
+        center: newValue.geometry.coordinates
+      }); */
+
+      var rect = document.getElementById("map").getBoundingClientRect();
+      var viewportX = [rect.bottom];
+      var shiftScreen = viewportX;
+      var offsetX = 0;
+      //console.log('this.visible_single', this.visible_single)
+      if (window.innerWidth > 650 && this.visible_single) {
+        offsetX = 650 + (window.innerWidth - 650) / 2 - window.innerWidth / 2;
+      }
+      //console.log('offsetX', offsetX);
+      this.myMap.flyTo({
+        center: this.getSelectedFeature.geometry.coordinates,
+        offset: [offsetX, 0], 
+        zoom: Math.min(this.myMap.getZoom()+1, 8)
+      });
+      //console.log(newValue.geometry.coordinates);
+
+    }
   },
   methods: {},
   components: {}
@@ -62,8 +120,17 @@ body {
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 100%;
+  width: 100vw; /* a little hack so the map width does not change when scrollbar is showing. */
   z-index: 0;
+}
+.mapboxgl-ctrl-bottom-right,
+.mapboxgl-ctrl-top-right {
+  right: 17px;
+}
+@media only screen and (max-width: 600px) {
+  .mapboxgl-control-container {
+    display: none;
+  }
 }
 </style>
 

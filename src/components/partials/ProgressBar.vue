@@ -1,5 +1,5 @@
 <template>
-  <div class="progress loader" v-if="showLoader">
+  <div v-bind:class="['progress loader', {loading: showLoader }]">
     <div
       class="progress-bar"
       role="progressbar"
@@ -12,7 +12,61 @@
 </template>
 
 <script>
+import { mapGetters, mapActions, mapMutations } from "vuex";
 export default {
-  props: ["loaderStyle", "showLoader"]
+  data() {
+    return {
+      showLoader: true
+    };
+  },
+  computed: {
+    ...mapGetters(["loadingProgress", "isLoading"]),
+    loaderStyle() {
+      return `width: ${this.loadingProgress}%;`;
+    }
+  },
+  watch: {
+    // watch the value of isLoading and once it's false hide the loader
+    isLoading(val) {
+      console.log('isLoading', val );
+      //self.showLoader = val;
+      let self = this;
+      if (val == false) {
+        setTimeout(function() {
+          self.showLoader = false;
+        }, 1500);
+      } else {
+        setTimeout(function() {
+          self.showLoader = true;
+        }, 100);
+      }
+    }
+  }
 };
 </script>
+<style>
+.loader {
+  /*   transition-delay: 2s;
+  transition: all 0.1s; */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 0px;
+  z-index: 1000000;
+}
+.loader.loading {
+  height: 4px;
+}
+.loading .progress-bar {
+  transition: all 1.3s;
+}
+.loader .progress-bar {
+  height: 100%;
+
+  background-color: var(--md-theme-z-primary, orange-red);
+}
+
+/* .loader-animation-leave-active {
+  transition: delay 1s;
+} */
+</style>

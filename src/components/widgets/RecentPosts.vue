@@ -3,12 +3,12 @@
     <h3>
       <slot></slot>
     </h3>
-    <ul v-if="recentPostsLoaded">
+    <ul >
       <li v-for="post in recentPosts(limit)" :key="post.id">
         <router-link :to="post.slug">{{ post.title.rendered }}</router-link>
       </li>
     </ul>
-    <div v-else>Loading...</div>
+
   </div>
 </template>
 
@@ -25,8 +25,8 @@ export default {
   },
 
   mounted() {
-    console.log(this.$router.app);
-    this.$store.dispatch("getPosts", { limit: this.limit });
+   //console.log(this.$router.app);
+    //this.$store.dispatch("getPosts", { limit: this.limit });
   }
 };
 </script>

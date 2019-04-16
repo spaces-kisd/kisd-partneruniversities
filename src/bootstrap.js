@@ -1,19 +1,14 @@
 import axios from "axios";
+/* import mapboxgl from "mapbox-gl"; */
 
 try {
   window._ = require('lodash');
-  window.$ = window.jQuery = require('jquery');
-  window.mapboxgl  = require('mapbox-gl');
-  window.axios = require('axios');
-  window.axios.defaults.headers.common = {
-    'X-CSRF-TOKEN': window.WordPress.csrfToken,
-    'X-Requested-With': 'XMLHttpRequest'
-  };
+  //window.$ = window.jQuery = require('jquery');
   axios.defaults.headers.common = {
-    "X-CSRF-TOKEN":
-      typeof window.WordPress !== "undefined" ? window.WordPress.csrfToken : "",
+    "X-WP-Nonce":
+      typeof window.restAPI !== "undefined" ? window.restAPI.nonce : "",
     "X-Requested-With": "XMLHttpRequest"
   };
 } catch (e) {
-  console.log(e);
+ //console.log(e);
 }

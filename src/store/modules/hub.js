@@ -7,7 +7,9 @@ const state = {
   error: null,
   notice: null,
   loading: true,
-  loading_progress: 0
+  loading_progress: 0,
+  visible_drawer: false,
+  visible_single: false
 };
 
 // getters
@@ -16,7 +18,9 @@ const getters = {
   loadingProgress: state => state.loading_progress,
   loadingIncrement: state => {
     return 100 / SETTINGS.LOADING_SEGMENTS;
-  }
+  },
+  visible_drawer: state => state.visible_drawer,
+  visible_single: state => state.visible_single
 };
 
 // actions
@@ -33,6 +37,14 @@ const mutations = {
 
   [types.RESET_LOADING_PROGRESS](state) {
     state.loading_progress = 0;
+  },
+  [types.VISIBLE_DRAWER](state, visible) {
+   //console.log('commit', types.VISIBLE_DRAWER, visible);
+    state.visible_drawer = visible;
+  },
+  [types.VISIBLE_SINGLE](state, visible) {
+   //console.log('commit', types.VISIBLE_SINGLE, visible);
+    state.visible_single = visible;
   }
 };
 
