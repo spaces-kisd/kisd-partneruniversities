@@ -7,13 +7,14 @@ export default {
 	 * glowing button: https://www.mapbox.com/about/team/marena-brinkhurst/
 	 */
 	init: function () {
-		mapboxgl.accessToken = 'pk.eyJ1IjoiYW5uZXBvZ2dlbnBvaGwiLCJhIjoiY2pxbWU5dXBmMG1zeDQycGp1a3JjZHd0NiJ9.sGqIXBpiMDbE-h7pjLx9dw';
-		return new mapboxgl.Map({
-			container: 'map',
-			style: 'mapbox://styles/annepoggenpohl/cjswyz70h0x9g1hms9q460jfi',
-			center: [105, -7.28],
-			zoom: 5
-		});
+		if ( typeof mapboxThemeSettings.accessToken === 'undefined' ){
+			console.log( 'No access mapbox token specified. Add one in Backend -> Settings -> General' );
+			return;
+		}
+		mapboxgl.accessToken = mapboxThemeSettings.accessToken; //'pk.eyJ1IjoiYW5uZXBvZ2dlbnBvaGwiLCJhIjoiY2pxbWU5dXBmMG1zeDQycGp1a3JjZHd0NiJ9.sGqIXBpiMDbE-h7pjLx9dw';
+		return new mapboxgl.Map( 
+			mapboxThemeSettings 
+		);
 	},
 	getRendered: function (map, layerName) {
 		let layer = map.getLayer(layerName);
