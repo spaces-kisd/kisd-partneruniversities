@@ -10,18 +10,22 @@
  *
  * @todo improve structure, move map-post type to class?
  *
- * @todo looks like we fetch things twice...
+ * @todo looks we still fetch things twice...
  * @see cats: http://wp.local/wp-json/wp/v2/categories?sort=name&hide_empty=true&per_page=10
+ *
+ * @todo remove acf frontend dependecy!
  */
 
 require_once 'classes/class-handle-acf.php';
+require_once 'classes/class-handle-mapbox.php';
 require_once 'classes/class-customize-theme.php';
 require_once 'classes/class-manage-local-storage.php';
 require_once 'classes/class-add-performance.php';
 
-$my_acf = new HandleAcf();
-$my_theme = new CustomizeTheme();
-$my_storage = new MangeLocalStorage();
+$my_acf         = new HandleAcf();
+$my_mapbox      = new HandleMapbox();
+$my_theme       = new CustomizeTheme();
+$my_storage     = new MangeLocalStorage();
 $my_performance = new AddPerformance();
 
 
@@ -72,9 +76,6 @@ function is_rest() {
 
 function load_scripts_styles() {
 
-	wp_enqueue_script( 'mapbox-gl-js', 'https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/0.53.1/mapbox-gl.js', array(), '0.53.1', true );
-	wp_enqueue_style( 'mapbox-gl-css', get_template_directory_uri() . '/mapbox-gl.css#asyncload', false, null );
-
 	if ( ! is_admin() ) {
 		wp_deregister_script( 'jquery' );
 	}
@@ -93,8 +94,6 @@ function delete_solution_transient() {
 	error_log( 'del trans' );
 	delete_site_transient( $feature_transient_name );
 }
-
-
 
 /**
  * @todo: we can probably think about a better way to posts and features (<-rename them!), so we don't fetch things so redundant.
@@ -295,8 +294,6 @@ function register_routes() {
 	);
 }
 
-
-
 function get_frontpage( $request ) {
 	// Get the ID of the static frontpage. If not set it's 0.
 	$pid = (int) get_option( 'page_on_front' );
@@ -325,160 +322,6 @@ function get_frontpage( $request ) {
 }
 
 
-
-/**
- * This function returns the markup for a breadcrumb.
- *
- * @param array   $arr
- * @param boolean $more_text
- * @return void
- */
-function make_breadcrumb_from_term_arr( $arr, $more_text = false ) {
-	$c = '';
-	$link;
-	foreach ( $arr as $term_id ) {
-		$link = esc_url( get_term_link( $term_id, 'category' ) );
-		$name = get_term( $term_id )->name;
-		$c   .= "<a href='$link'>$name</a>";
-	}
-	if ( $more_text ) {
-		$c .= "<a class='more' href='$link'>$more_text</a>";
-	}
-	return "<p class='breadcrumb'>$c</p>";
-}
-
-/**
- * Undocumented function
- *
- * @param [type] $nested_cats_arr
- * @return void
- */
-function recurse_nested_cats_arr( $nested_cats_arr ) {
-	$out                = '';
-	$teaster_elem_count = 4;
-	if ( empty( $nested_cats_arr ) ) {
-		return;
-	}
-
-	foreach ( $nested_cats_arr as $cat ) {
-		if (
-			! $cat['child_count']
-			|| $cat['child_count'] > 3 // don't show children if they have more than 3 elems.
-		) {
-
-			$id              = $cat['cat_ID'];
-			$more_post_cards = '';
-			// there is more than $teaster_elem_coun in the current category
-			if ( $teaster_elem_count < $cat['count'] ) {
-				// $grid_class = "medium-up-4";
-				$url             = esc_url( get_term_link( $id, 'category' ) );
-				$remaining       = $cat['count'] - $teaster_elem_count;
-				$more_text       = "$remaining weitere";
-				$more_post_cards = "
-                    <div class='cell medium-2'>
-                        <a href='$url' class='card' data-equalizer-watch>
-                            <div class='card-section'>
-                                <p>$more_text</p>
-                            </div>
-                        </a>
-                    </div>
-                ";
-			}
-
-			// $name = $cat['name'];
-			$description = $cat['description'];
-			// $link = get_category_link($id);
-			$posts      = get_post_teaster_by_cat( $id, $teaster_elem_count, 4 );
-			$post_cards = '';
-			$card_class = 'medium-4';
-			if ( $more_post_cards ) {
-				$card_class = 'medium-4';
-			}
-			foreach ( $posts as $post ) {
-				$post_cards .= make_teaser_card( $post, $card_class );
-			}
-			$post_cards .= $more_post_cards;
-
-			$more_text = '';
-
-			// the current cat has more than 3 child-categories.
-			if ( $cat['child_count'] > 3 ) {
-				$url = esc_url( get_term_link( $id, 'category' ) );
-				// $remaining = $cat['count'] - $cat['child_count'];
-				$more_text = $cat['child_count'] . ' Weitere';
-			}
-
-			$bc = make_breadcrumb_from_term_arr(
-				array_merge( $cat['parent_cats'], array( $id ) ),
-				$more_text
-			);
-
-			$out .= "
-				<p class='cat-container'>
-                    <div class='content-data alignwide'>
-                        $bc
-                    </div>
-					<div class='grid-container alignfull padding'>
-						<div class='grid-x grid-padding-x teaser-posts' data-equalizer data-equalize-on='medium'>
-							$post_cards
-						</div>
-					</div>
-				<p>
-			";
-		} else {
-			$out .= recurse_nested_cats_arr( $cat['children'] );
-		}
-	}
-	return $out;
-}
-
-/**
- * Runs through nested cats.
- *
- * @param [type]  $id The Term ID.
- * @param boolean $max_depth
- * @param integer $depth
- * @param array   $cats
- * @return void
- */
-function nested_cats_arr( $id, $max_depth = false, $depth = 0, $cats = array() ) {
-
-	if ( $max_depth !== false && $max_depth <= $depth ) {
-		return;
-	}
-	$depth++;
-	$output     = array();
-	$args       = array(
-		'parent'       => $id,
-		'hierarchical' => 1,
-		'taxonomy'     => 'category',
-		'hide_empty'   => 0,
-	);
-	$categories = get_categories( $args );
-	if ( count( $categories ) > 0 ) {
-		foreach ( $categories as $category ) {
-			$children = nested_cats_arr(
-				$category->cat_ID,
-				$max_depth,
-				$depth,
-				array_merge( $cats, array( $category->cat_ID ) ) // add the current cat to the array.
-			);
-
-			$arr = array_merge(
-				(array) $category,
-				array(
-					'parent_cats'    => $cats, // this is not all partents, but the ones starting from $id.
-					'child_count'    => count( $children ),
-					'children'       => $children,
-					'relative_depth' => $depth, // the relative from where we started.
-				)
-			);
-			array_push( $output, $arr );
-		}
-	}
-	return $output;
-}
-
 register_nav_menus(
 	array(
 		'footer' => __( 'Footer', 'blankslate' ),
@@ -502,31 +345,31 @@ function feature_solution_func( $atts, $content = '' ) {
 	$atts['content'] = ( $atts['content'] ) ? $atts['content'] : $content;
 
 	return "
-	<ul class='md-list cat-posts md-triple-line md-theme-z'>
-		<li to='/solution/algramo/' class='md-list-item'>
-		<a
-			href='/solution/algramo/'
-			class='md-list-item-router md-list-item-container md-button-clean'
-			mdripple='true'
-		>
-			<div class='md-list-item-content md-ripple'>
-				<div class='cat-feature-container'>
-					<img
-					src='https://zerowastelivinglab.com/wp-content/uploads/2019/02/thumbnaill_algramo-1024x768.png'
-					class='cat-feature'
-					>
-				</div>
-				<div class='md-list-item-text'>
-					<div class='md-title'>Algramo</div> 
-					<span>Reusable Refill System for Everyday Products</span>
-					<div>
-						<p>Algramo offers affordable quantities of everyday products without single-use, non-recyclable packaging</p>
+		<ul class='md-list cat-posts md-triple-line md-theme-z'>
+			<li to='/solution/algramo/' class='md-list-item'>
+			<a
+				href='/solution/algramo/'
+				class='md-list-item-router md-list-item-container md-button-clean'
+				mdripple='true'
+			>
+				<div class='md-list-item-content md-ripple'>
+					<div class='cat-feature-container'>
+						<img
+						src='https://zerowastelivinglab.com/wp-content/uploads/2019/02/thumbnaill_algramo-1024x768.png'
+						class='cat-feature'
+						>
+					</div>
+					<div class='md-list-item-text'>
+						<div class='md-title'>Algramo</div> 
+						<span>Reusable Refill System for Everyday Products</span>
+						<div>
+							<p>Algramo offers affordable quantities of everyday products without single-use, non-recyclable packaging</p>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a
-		</li>
-	</ul>
+			</a
+			</li>
+		</ul>
 	";
 }
 add_shortcode( 'feature_solution', 'feature_solution_func' );
