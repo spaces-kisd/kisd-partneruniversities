@@ -31,9 +31,12 @@ class CustomizeTheme {
 
 	/** add a custom stylesheet from /static/theme.css if it exists. */
 	public function load_scripts_styles() {
-		$file = get_template_directory_uri() . '/static/theme.css';
-		if ( file_exists( $file ) ) {
-			wp_enqueue_style( 'custom-theme', $file, array(), filemtime( $file ), 'all' );
+		$file_subdir = '/static/theme.css';
+		$file_uri    = get_template_directory_uri() . $file_subdir;
+		$file_local  = get_template_directory() . $file_subdir;
+
+		if ( file_exists( $file_local ) ) {
+			wp_enqueue_style( 'custom-theme', $file_uri, array(), filemtime( $file_local ), 'all' );
 		}
 
 	}

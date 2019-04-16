@@ -29,9 +29,6 @@ class HandleAcf {
 			if ( ! $this->api_key ) {
 				add_action( 'admin_notices', array( $this, 'notice_add_api_key' ) );
 			}
-			if ( ! function_exists( 'get_field' ) ) {
-				add_action( 'admin_notices', array( $this, 'notice_add_acf' ) );
-			}
 
 			add_filter( 'acf/fields/google_map/api', array( $this, 'my_acf_google_map_api' ) );
 		}
