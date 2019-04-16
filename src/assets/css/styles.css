@@ -1,13 +1,14 @@
-@import "normalize.css";
+/*@import "normalize.css";
+
 
 @import "./_layout";
-@import "./_typography";
+ @import "./_typography";
 
 @import "./components/site-header";
 @import "./components/site-content";
-@import "./components/site-footer";
+@import "./components/site-footer"; 
 
-@import "./components/progress-bar";
+
 
 :root {
   --brandPrimary: #30d17d;
@@ -28,3 +29,5 @@
 @custom-media --large-desktop (min-width: 1330px);
 @custom-media --turd-browser screen and (-ms-high-contrast: active),
   screen and (-ms-high-contrast: none);
+
+@import "./components/progress-bar";*/

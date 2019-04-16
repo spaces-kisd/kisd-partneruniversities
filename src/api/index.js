@@ -3,88 +3,59 @@ import axios from "axios";
 import SETTINGS from "../settings";
 
 export default {
-  getCategories(cb) {
+
+  toQueryString(obj) {
+    var str = [];
+    for (var p in obj) {
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
+    }
+    return (str.length) ? '?' + str.join('&') : '';
+  },
+
+  // rename to fetch?
+  get(type = 'posts', query = { per_page: 10 }, cb) {
+    if (_.includes(['post', 'page'], type)) {
+      console.log('Use plural here, ' + type + 's' + ' instead of ' + type);
+    }
     axios
       .get(
         SETTINGS.API_BASE_PATH +
-          "categories?sort=name&hide_empty=true&per_page=50"
+        type +
+        this.toQueryString(query)
       )
       .then(response => {
-        cb(response.data.filter(c => c.name !== "Uncategorized"));
-      })
-      .catch(e => {
-        cb(e);
-      });
-  },
-
-  getPages(cb) {
-    axios
-      .get(SETTINGS.API_BASE_PATH + "pages?per_page=10")
-      .then(response => {
         cb(response.data);
       })
       .catch(e => {
-        cb(e);
+        console.log('something went wrong fetching:', e, 'type:', type, 'query', query );
       });
   },
-
-  getPage(id, cb) {
+  getById(id, postType = 'post', cb) {
     if (_.isNull(id) || !_.isNumber(id)) return false;
     axios
-      .get(SETTINGS.API_BASE_PATH + "pages/" + id)
+      .get(
+        SETTINGS.API_BASE_PATH +
+        postType + '/' +
+        id
+      )
       .then(response => {
-        cb(response.data);
+        cb(response);
       })
       .catch(e => {
         cb(e);
       });
   },
 
-  getPosts (limit, cb) {
-    this.getPostType('posts', limit, cb);
-    /* if (_.isEmpty(limit)) { let limit = 5 }
-    
-    axios.get(window.SETTINGS.API_BASE_PATH + 'posts?per_page='+limit)
-      .then(response => {
-        cb(response.data);
-      })
-      .catch(e => {
-        cb(e)
-      }) */
-  },
-
-  getPost (id, cb) {
-    if (_.isNull(id) || !_.isNumber(id)) return false
-    axios.get(window.SETTINGS.API_BASE_PATH + 'posts/'+id)
+  getFrontPage(cb) {
+    axios
+      .get("/wp-json/map/v1/frontpage")
       .then(response => {
         cb(response.data);
       })
       .catch(e => {
         cb(e);
-      })
-  },
-
-  getPostType(name, limit, cb) {
-    if (_.isEmpty(limit)) { let limit = 5 }
-    let base_url = window.location.protocol + "//" + window.location.host + "/";
-    axios.get(window.SETTINGS.API_BASE_PATH + name + '?per_page='+limit)
-      .then(response => {
-        //response.data.link_relative = response.data.link.replace(base_url, '');
-        //console.log(response.data.link);
-        cb(response.data);
-      })
-      .catch(e => {
-        cb(e)
       });
-  },
-
-  getFeatureCollection( cb ) {
-    axios.get("/wp-json/map/v1/features/solution").then(response => {
-      console.log('api features', response.data)
-      cb(response.data);
-    })
-    .catch(e => {
-      cb(e)
-    });
   }
 }

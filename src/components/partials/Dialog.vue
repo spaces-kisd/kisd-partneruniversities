@@ -20,15 +20,12 @@ The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for t
   export default {
     data: () => ({
       showDialog: false
-    }),
-    mounted() {
-
-    }
+    })
   }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .md-dialog {
     max-width: 768px;
   }
-</style>
+</style> 

@@ -1,8 +1,13 @@
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const webpack = require("webpack");
 const path = require("path");
+var LiveReloadPlugin = require('webpack-livereload-plugin');
+
 
 module.exports = {
+  externals: {
+    mapboxgl: 'mapbox-gl'
+  },
   entry: {
     index: "./src/app.js",
     "index.min": "./src/app.js"
@@ -92,15 +97,16 @@ module.exports = {
     }
   },
   plugins: [
-    new webpack.ProvidePlugin({
+/*     new webpack.ProvidePlugin({
       throttle: "lodash.throttle"
-    }),
+    }), */
     new webpack.optimize.UglifyJsPlugin({
       include: /\.min\.bundle\.js$/,
       minimize: true,
       ecma: 8
     }),
     new webpack.LoaderOptionsPlugin({ minimize: true }),
-    new ExtractTextPlugin("styles.css")
+    new ExtractTextPlugin("styles.css"), //use this instead https://github.com/webpack-contrib/mini-css-extract-plugin
+    new LiveReloadPlugin({ appendScriptTag: true })
   ]
 };

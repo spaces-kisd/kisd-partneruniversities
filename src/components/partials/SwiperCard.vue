@@ -1,62 +1,93 @@
 <template>
-  <md-card md-with-hover @click.native="router.push(feature.properties.link_relative)">
-    <!--     <md-ripple>
-      <md-card-header>
-        <div class="md-title">{{ feature.properties.title }}</div>
-        <div class="md-subhead">It also have a ripple</div>
-      </md-card-header>
-      <md-card-content>Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non.</md-card-content>
-    </md-ripple>-->
-    <md-card-media v-if="feature.properties.thumbnail">
-      <img :src="feature.properties.thumbnail" alt="People">
-    </md-card-media>
-
-    <md-card-header>
-      <div class="md-title">{{ feature.properties.title }}</div>
-      <div class="md-subhead">Subtitle here</div>
-    </md-card-header>
-
-    <md-card-content>{{ feature.properties.excerpt }} </md-card-content>
-
-    <!--     <md-card-media-cover>
+  <md-card
+    md-with-hover
+    @click.native="router.push(feature.properties.link_relative)"
+    md-text-scrim
+    v-bind:class="selected ? 'md-elevation-24-not': 'else'"
+    class="swiper-card"
+  >
+    <md-card-media-cover md-text-scrim>
       <md-card-media md-ratio="16:9">
-        <img :src="feature.properties.thumbnail" alt="Skyscraper">
+        <img v-if="feature.properties.thumbnail" :src="feature.properties.thumbnail" alt="Skyscraper">
       </md-card-media>
 
       <md-card-area>
         <md-card-header>
           <span class="md-title">{{ feature.properties.title }}</span>
-          <span class="md-subhead">Inonesia</span>
+          <span class="md-subheading">{{ feature.properties.subtitle }}</span>
         </md-card-header>
-
-        <md-card-actions>
-          <md-button>Neither this</md-button>
-          <md-button>Or this</md-button>
-        </md-card-actions>
       </md-card-area>
-    </md-card-media-cover>-->
+    </md-card-media-cover>
   </md-card>
 </template>
 
 <script>
+import { mapGetters, mapState, mapMutations } from "vuex";
+
 //https://vuematerial.io/components/card/
 export default {
   props: {
     feature: {
       type: Object
-    }
+    },
+    index: 0
   }, //['title', 'href', 'slug', 'data'],
   data() {
     return {
-      router: this.$router
-      //post: false
+      router: this.$router,
+      selected: false
     };
   },
-  components: {
-    router: this.router
+  computed: {
+    ...mapGetters([ "getSelected" ])
   },
-  mounted() {
-    //console.log(this)
-  }
+  methods: {
+    selectionChanged(f) {}
+  },
+  components: {
+    //router: this.router
+  },
+  updated() {
+    //console.log("after");
+  },
+  watch: {}
 };
 </script>
+<style>
+.swiper-container .swiper-slide {
+  opacity: 1;
+}
+.swiper-card .md-card-header {
+  padding: 2% 4.5%;
+}
+
+.swiper-card .md-title {
+  font-size: 2.1em;
+  line-height: 1em;
+  padding-bottom: 2px;
+}
+.swiper-card .md-subheading {
+  font-size: 1.3em;
+  line-height: 1.1em;
+}
+
+.swiper-card .md-card-backdrop {
+  background: linear-gradient(
+    rgba(0, 0, 0, 0) 30%,
+    rgba(0, 0, 0, 0.4) 66%,
+    rgba(0, 0, 0, 0.7) 100%
+  ) !important;
+}
+
+@media only screen and (max-width: 900px) {
+  .swiper-card .md-title {
+    font-size: 1.4em;
+  }
+  .swiper-card .md-subheading {
+    font-size: 1.2em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+</style>

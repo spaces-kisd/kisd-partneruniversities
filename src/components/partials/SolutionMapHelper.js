@@ -3,59 +3,121 @@ export default {
 	/**
 	 * 3d globe:
 	 * @see https://mapsapidocs.digitalglobe.com/docs/maps-api-mapboxjs
+	 * 
+	 * glowing button: https://www.mapbox.com/about/team/marena-brinkhurst/
 	 */
-	init: function(){
-		mapboxgl.accessToken = 'pk.eyJ1IjoibWFja2JpcmQiLCJhIjoiY2pwbjl2aGkxMDB0ODQzbWR6OGUxcjY3YyJ9.U8dt-qpZG0b_iH68TVWAtQ';
-		console.log('init');
+	init: function () {
+		mapboxgl.accessToken = 'pk.eyJ1IjoiYW5uZXBvZ2dlbnBvaGwiLCJhIjoiY2pxbWU5dXBmMG1zeDQycGp1a3JjZHd0NiJ9.sGqIXBpiMDbE-h7pjLx9dw';
 		return new mapboxgl.Map({
 			container: 'map',
-			style: 'mapbox://styles/mackbird/cjpnapc0x04vs2ro5ert88gpq',
-			center: [-103.59179687498357, 40.66995747013945],
-			zoom: 3
+			style: 'mapbox://styles/annepoggenpohl/cjswyz70h0x9g1hms9q460jfi',
+			center: [105, -7.28],
+			zoom: 5
 		});
 	},
-	getAllVisible: function(map, e){
+	getRendered: function (map, layerName) {
+		let layer = map.getLayer(layerName);
+		if (typeof layer === 'undefined') {
+			//console.log( 'SolutionMapHelper.js', 'not yet there', layer);
+			return false;
+		}
+		return map.queryRenderedFeatures({ layers: [layerName] });
+	},
+	getAllVisible: function (map, e) {
 		/**
 		 * @todo handle zoom ( when a cluster shows multiple times on the world map...)
 		 */
 		var allPoints = [];
-		let unclustered = map.queryRenderedFeatures( {layers: ['unclustered-point']});
-		allPoints.push.apply(allPoints, unclustered);
+		let unclustered = this.getRendered(map, 'unclustered-point');
+		
+		var allIds = unclustered.map( f => f.properties.post_id );
 
-		let features =  map.queryRenderedFeatures({ layers: ['clusters'] });
+		allPoints.push.apply(allPoints, unclustered.map((feature) => {
+			feature.cluster = false;
+			return feature
+		}));
+
+
+		let features = this.getRendered(map, 'clusters');
 		let clusterSource = map.getSource('solutions');
-		features.forEach(feature => {
+
+		var promises = [];
+
+		//https://stackoverflow.com/questions/10004112/how-can-i-wait-for-set-of-asynchronous-callback-functions
+		//https://javascript.info/promise-chaining
+		features.forEach( feature => {
 			let fProp = feature.properties;
 			// Get all points under a cluster
-			clusterSource.getClusterLeaves(fProp.cluster_id, fProp.point_count, 0, function(err, aFeatures){
+			promises.push(
+			clusterSource.getClusterLeaves(fProp.cluster_id, fProp.point_count, 0, function (err, aFeatures) {
 				//allPoints.push(aFeatures[0]
 				//console.log(aFeatures);
 				//allPoints.push(aFeatures[0]);
-				allPoints.push.apply(allPoints, aFeatures);
+/* 				allIds.concat(
+					allIds,
+					aFeatures.map( f => f.properties.post_id )
+				); */
+				aFeatures.forEach( (e) => {
+					allIds.push(e.properties.post_id);
+				});
+				allPoints.push.apply(
+					allPoints,
+					aFeatures.map(
+						(feature) => {
+							feature.cluster = fProp.cluster_id;
+							return feature;
+						}
+					)
+				);
 				//allPoints = allPoints.concat(aFeatures, allPoints);
 				//allPoints = [...allPoints, aFeatures];//allPoints.concat(aFeatures);
 				//console.log('getClusterLeaves', err, aFeatures);
-			});
+			}
+			));
 		});
-
-		return allPoints;
-		//console.log([].concat.apply([], allPoints));
+		return new Promise((resolve, reject) => {
+			setTimeout(() => resolve(allIds), 2000); // (*)
+		});
+	
+		Promise.all(promises).then(function() {
+			console.log('all promises done!');
+			// returned data is in arguments[0], arguments[1], ... arguments[n]
+			// you can process it here
+			return allIds;
+		}, function(err) {
+			// error occurred
+		});
+		//return allIds;
+		//return JSON.parse(JSON.stringify(allIds));
+		/* 		return allPoints.filter(function (item) {
+					return item !== undefined;
+				}); */
 	},
-	addEvents: function(map){
+	centerOn: function (map, coordinates, zoom = 3) {
+		//https://docs.mapbox.com/mapbox-gl-js/example/flyto-options/
+		//https://stackoverflow.com/questions/47224472/define-center-of-map-in-mapbox
+		var rect = document.getElementById('map').getBoundingClientRect();
+		var viewportX = [rect.bottom];
+		var shiftScreen = viewportX;
+		map.flyTo({
+			center: coordinates,
+			/* offset: [shiftScreen, shiftScreen], */
+			zoom: zoom
+		});
+	},
+	addEvents: function (map) {
 		var MapConfig = this;
 		// inspect a cluster on click
 		map.on('click', 'clusters', function (e) {
-			MapConfig.getAllVisible( map, e );
+			MapConfig.getAllVisible(map, e);
 			var features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
 			var clusterId = features[0].properties.cluster_id;
 			map.getSource('solutions').getClusterExpansionZoom(clusterId, function (err, zoom) {
 				if (err)
 					return;
 
-				map.easeTo({
-					center: features[0].geometry.coordinates,
-					zoom: zoom
-				});
+				MapConfig.centerOn(map, features[0].geometry.coordinates, zoom);
+
 			});
 		});
 
@@ -67,16 +129,15 @@ export default {
 		});
 
 
-		map.on('click', 'unclustered-point', function (e) {
-			//console.log(e.features);
-			let description = "rata";
-			new mapboxgl.Popup()
-				.setLngLat(e.lngLat)
-				.setHTML(e.features[0].properties.title)
-				.addTo(map);
-			
-			MapConfig.getAllVisible( map, e );
-		});
+		/* 		map.on('click', 'unclustered-point', function (e) {
+					//console.log(e.features);
+					let description = "rata";
+						new mapboxgl.Popup()
+						.setLngLat(e.lngLat)
+						.setHTML(e.features[0].properties.title)
+						.addTo(map);
+					MapConfig.getAllVisible(map, e);
+				}); */
 
 		map.on('mouseenter', 'unclustered-point', function () {
 			map.getCanvas().style.cursor = 'pointer';
@@ -85,15 +146,15 @@ export default {
 			map.getCanvas().style.cursor = '';
 		});
 	},
-	addData: function(map, data){
+	addData: function (map, data) {
 		map.addSource("solutions", {
 			type: "geojson",
 			// Point to GeoJSON data. This example visualizes all M1.0+ solutions
 			// from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
 			data: data,
 			cluster: true,
-			clusterMaxZoom: 14, // Max zoom to cluster points on
-			clusterRadius: 50, // Radius of each cluster when clustering points (defaults to 50)
+			clusterMaxZoom: 9, // Max zoom to cluster points on
+			clusterRadius: 15, // Radius of each cluster when clustering points (defaults to 50)
 			tolerance: 3
 		});
 
@@ -120,11 +181,11 @@ export default {
 				"circle-radius": [
 					"step",
 					["get", "point_count"],
+					15,
+					5,
 					20,
-					100,
-					30,
-					750,
-					40
+					10,
+					25
 				]
 			}
 		});
@@ -148,7 +209,7 @@ export default {
 			filter: ["!", ["has", "point_count"]],
 			paint: {
 				"circle-color": "#11b4da",
-				"circle-radius": 4,
+				"circle-radius": 10,
 				"circle-stroke-width": 1,
 				"circle-stroke-color": "#fff"
 			}
