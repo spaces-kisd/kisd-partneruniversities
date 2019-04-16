@@ -25,8 +25,7 @@ export default {
   },
 
   mounted() {
-   //console.log(this.$router.app);
-    //this.$store.dispatch("getPosts", { limit: this.limit });
+    this.$store.dispatch("getPosts", { limit: this.limit });
   }
 };
 </script>
