@@ -18,11 +18,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
-      "getSelected",
-      "visible_single",
-      "getSelectedFeature"
-    ])
+    ...mapGetters(["getSelected", "visible_single", "getSelectedFeature"])
   },
   mounted() {
     var sourceData = [];
@@ -33,9 +29,16 @@ export default {
     this.myMap.touchZoomRotate.disableRotation();
     this.myMap.addControl(
       new mapboxgl.NavigationControl({
-        showCompass: false,
-        position: "top-right" //todo: add mediaquery to hide on mobile.
-      })
+        showCompass: false
+        //todo: add mediaquery to hide on mobile.
+      }),
+      "bottom-left"
+    );
+    this.myMap.addControl(
+      new mapboxgl.AttributionControl({
+        compact: true
+      }),
+      "bottom-left"
     );
     let added = false;
     var comp = this;
@@ -70,7 +73,7 @@ export default {
     }
 
     this.myMap.on("moveend", function() {
-/*       if (comp.myMap) {
+      /*       if (comp.myMap) {
         MapConfig.getAllVisible(comp.myMap).then( function( features ) {
           comp.$store.commit(types.STORE_VISIBLE_FEATURES, features );
         });
@@ -97,13 +100,16 @@ export default {
         offsetX = 650 + (window.innerWidth - 650) / 2 - window.innerWidth / 2;
       }
       //console.log('offsetX', offsetX);
-      this.myMap.flyTo({
-        center: this.getSelectedFeature.geometry.coordinates,
-        offset: [offsetX, 0], 
-        zoom: Math.min(this.myMap.getZoom()+1, 8)
-      });
-      //console.log(newValue.geometry.coordinates);
 
+      if (!_.isUndefined(this.getSelectedFeature)) {
+        this.myMap.flyTo({
+          center: this.getSelectedFeature.geometry.coordinates,
+          offset: [offsetX, 0],
+          zoom: Math.min(this.myMap.getZoom() + 1, 8)
+        });
+        //console.log('geo', this.getSelectedFeature.geometry);
+      }
+      //console.log(newValue.geometry.coordinates);
     }
   },
   methods: {},
@@ -127,10 +133,23 @@ body {
 .mapboxgl-ctrl-top-right {
   right: 17px;
 }
-@media only screen and (max-width: 600px) {
-  .mapboxgl-control-container {
+@media only screen and (max-width: 1280px) {
+ .mapboxgl-ctrl-group, .mapboxgl-compact {
     display: none;
   }
+}
+
+.mapboxgl-ctrl-bottom-left .mapboxgl-ctrl {
+  margin-left: calc(1% + 26px);
+}
+.mapboxgl-compact.mapboxgl-compact {
+  bottom: 0px;
+  position: absolute;
+  margin-left: 200px;
+}
+/** zoom **/
+.vertical .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl-group {
+  margin-right: 300px;
 }
 </style>
 

@@ -11,9 +11,10 @@ export default {
 			console.log( 'No access mapbox token specified. Add one in Backend -> Settings -> General' );
 			return;
 		}
-		mapboxgl.accessToken = mapboxThemeSettings.accessToken; //'pk.eyJ1IjoiYW5uZXBvZ2dlbnBvaGwiLCJhIjoiY2pxbWU5dXBmMG1zeDQycGp1a3JjZHd0NiJ9.sGqIXBpiMDbE-h7pjLx9dw';
-		return new mapboxgl.Map( 
-			mapboxThemeSettings 
+		mapboxgl.accessToken = mapboxThemeSettings.accessToken;
+		mapboxThemeSettings.attributionControl = false;
+		return new mapboxgl.Map(
+			mapboxThemeSettings
 		);
 	},
 	getRendered: function (map, layerName) {
@@ -128,7 +129,6 @@ export default {
 		map.on('mouseleave', 'clusters', function () {
 			map.getCanvas().style.cursor = '';
 		});
-
 
 		/* 		map.on('click', 'unclustered-point', function (e) {
 					//console.log(e.features);

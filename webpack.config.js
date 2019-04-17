@@ -6,7 +6,8 @@ var LiveReloadPlugin = require('webpack-livereload-plugin');
 
 module.exports = {
   externals: {
-    mapboxgl: 'mapbox-gl'
+    mapboxgl: 'mapbox-gl',
+    swiper: 'swiper'
   },
   entry: {
     index: "./src/app.js",

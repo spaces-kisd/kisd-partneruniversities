@@ -93,11 +93,15 @@ export default {
 
 .content-card {
   padding-bottom: 0;
-  top: 100px;
   width: calc(100vw - 40px);
-  max-width: 650px;
+  max-width: 620px;
   margin: calc(1% + 10px);
+  margin-top: 100px;
 }
+.vertical .content-card {
+  margin-bottom: 120px;
+}
+
 .content-card .md-card-media img {
   max-height: 60vh;
   object-fit: cover;
@@ -107,6 +111,7 @@ export default {
   .content-card {
     width: 100%;
     margin: 0;
+    margin-top: 200px;
   }
   .content-card .md-card-media img {
     max-height: 35vh;
