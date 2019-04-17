@@ -24,15 +24,11 @@ Vue.use(MdChips);
 Vue.use(MdProgress);
 Vue.use(MdList);
 
-// custom theme for zero waste living lab.
+/**
+ * todo:remove custom theme.
+ */
 Vue.material.theming.theme = 'z';
-
 /* Vue.use(VueMaterial); */
-
-// require styles
-import 'swiper/dist/css/swiper.css';
-
-Vue.use(VueAwesomeSwiper);
 
 new Vue({
   el: "#app",
