@@ -156,7 +156,6 @@ export default {
 <style>
 .my-swiper {
   margin-bottom: 25px;
-  margin-top: 10px;
   box-sizing: border-box;
 }
 
@@ -176,6 +175,7 @@ export default {
 /** horizontal **/
 .horizontal .my-swiper {
   right: 0;
+  margin-top: 10px;
   max-width: 100%;
   width: 100vw;
 }
