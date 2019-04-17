@@ -184,7 +184,7 @@ export default {
 }
 @media only screen and (max-width: 860px) {
   .content-card.solution-card {
-    top: 40vh;
+    margin-top: 40vh;
   }
   .content-card .md-card-media img {
     max-height: 45vh;

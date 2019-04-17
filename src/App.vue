@@ -1,26 +1,34 @@
 <template>
-  <div id="my-app" class="page-wrapper">
+  <div id="my-app" :class="['page-wrapper', horizontalOrVertial]">
     <transition
       name="loader-animation"
       enter-active-class="animated fadeIn"
       leave-active-class="animated fadeOut"
     >
-      <progress-bar />
+      <progress-bar/>
     </transition>
     <drawer :visible="visible_drawer"/>
 
     <div :class="['logo-container top', { hidden : visible_drawer }]" style="z-index:1">
-      <md-button aria-label='main-menu-button' class="md-icon-button md-raised md-primary" @click.native="router.push('/home')">
+      <md-button
+        aria-label="main-menu-button"
+        class="md-icon-button md-raised md-primary"
+        @click.native="router.push('/home')"
+      >
         <md-icon>menu</md-icon>
       </md-button>
       <!-- md-display-1 -->
     </div>
-    <transition name="fade-slide-left" mode="out-in" appear>
-    <router-view :key="$route.params.postSlug"></router-view>
-    </transition>
+    <div class="content-extend">
+      <transition name="fade-slide-left" mode="out-in" appear>
+        <router-view :key="$route.params.postSlug"></router-view>
+      </transition>
+    </div>
 
     <!-- <transition name="fade" mode="out-in"> -->
-      <swiper :visible=" ! swiperHidden" v-bind:class="{ moved : swiperHidden }"/>
+    <swiper
+      v-bind:swiperDirection="horizontalOrVertial"
+    />
     <!-- </transition> -->
 
     <solution-map/>
@@ -54,24 +62,35 @@ export default {
   data() {
     return {
       showLoader: true,
-      router: this.$router
+      router: this.$router,
+      windowWidth: 0
     };
   },
   computed: {
-    ...mapGetters([
-      "frontPage",
-      "visible_drawer",
-      "visible_single"
-    ]),
-    swiperHidden() {
-      return this.visible_drawer || this.visible_single;
+    ...mapGetters(["frontPage", "visible_drawer", "visible_single"]),
+    horizontalOrVertial() {
+      let hv = this.windowWidth < 1280 ? "horizontal" : "vertical";
+      console.log(hv);
+      return hv;
     }
   },
   beforeMount() {
     /* this.$store.commit(types.VISIBLE_SINGLE, false);
     this.$store.commit(types.VISIBLE_DRAWER, false); */
   },
+  methods: {
+    updateWindowWidth(event) {
+      this.windowWidth = document.documentElement.clientWidth;
+    }
+  },
   mounted() {
+    this.$nextTick(function() {
+      window.addEventListener(
+        "resize", _.debounce( this.updateWindowWidth, 300 )
+      );
+      //Init
+      this.updateWindowWidth();
+    });
     // close all the things on pressing esc.
     document.body.addEventListener("keyup", e => {
       if (e.keyCode === 27) {
@@ -111,14 +130,14 @@ export default {
 
       const url = new URL(link.href);
       const to = url.pathname;
-      
+
       // open external links and wp-admin-links in new window.
       if (
-        link.matches("a[href*='/wp-admin/']")
-        || url.host != window.location.host
+        link.matches("a[href*='/wp-admin/']") ||
+        url.host != window.location.host
       ) {
         event.preventDefault();
-        window.open(url, '_blank');
+        window.open(url, "_blank");
         return;
       }
 
@@ -143,8 +162,22 @@ export default {
 };
 </script>
 <style>
-.hidden {
-  display: none;
+#my-app {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+}
+#my-app.vertical {
+  flex-direction: row;
+}
+
+#my-app > * {
+  flex-shrink: 0;
+}
+
+#my-app .content-extend {
+  flex: 1 0 auto;
+  overflow: auto;
 }
 
 #my-app {
@@ -161,10 +194,6 @@ export default {
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
   transition-delay: 2s;
-}
-
-.s-container {
-  width: 100%;
 }
 
 .fade-slide-left-enter-active {
@@ -217,5 +246,4 @@ export default {
   padding: 1%;
   padding-top: 10%;
 }
-
 </style>

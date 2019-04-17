@@ -76,6 +76,10 @@ function is_rest() {
 
 function load_scripts_styles() {
 
+	wp_enqueue_script( 'swiper', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.min.js', array(), '4.5.0', true );
+	// wp_add_inline.
+	wp_enqueue_style( 'swiper-css', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css', false, null );
+
 	if ( ! is_admin() ) {
 		wp_deregister_script( 'jquery' );
 	}

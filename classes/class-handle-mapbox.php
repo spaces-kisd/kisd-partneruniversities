@@ -114,9 +114,9 @@ class HandleMapbox {
 		echo "
 			<textarea type='text'
 				rows='10'
+				cols='150'
 				id='mapbox_api_key' 
 				name='mapbox_api_key' 
-				class='regular-text ltr'
 				aria-describedby='mapbox-description'
 			>$val_with_defaults</textarea>
 			<p class='description' id='mapbox-description'>

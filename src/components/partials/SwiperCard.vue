@@ -54,9 +54,7 @@ export default {
 };
 </script>
 <style>
-.swiper-container .swiper-slide {
-  opacity: 1;
-}
+
 .swiper-card .md-card-header {
   padding: 2% 4.5%;
 }
