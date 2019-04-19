@@ -7,9 +7,9 @@
 	global $wp;
 	$abs_url = home_url( $wp->request );
 
-	$blog_description = htmlspecialchars( get_bloginfo( 'description' ), ENT_QUOTES, false );
-	$blog_name        = htmlspecialchars( get_bloginfo( 'blogname' ), ENT_QUOTES, false );
-	$title            = htmlspecialchars( get_the_title(), ENT_QUOTES, false );
+	$blog_description = htmlspecialchars( get_bloginfo( 'description' ), ENT_COMPAT, 'UTF-8', false );
+	$blog_name        = htmlspecialchars( get_bloginfo( 'blogname' ), ENT_COMPAT, 'UTF-8', false );
+	$title            = htmlspecialchars( get_the_title(), ENT_COMPAT, 'UTF-8', false );
 
 	echo "
 		<title>$blog_name - $blog_description</title>
