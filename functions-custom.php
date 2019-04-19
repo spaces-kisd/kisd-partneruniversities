@@ -21,12 +21,15 @@ require_once 'classes/class-handle-mapbox.php';
 require_once 'classes/class-customize-theme.php';
 require_once 'classes/class-manage-local-storage.php';
 require_once 'classes/class-add-performance.php';
+require_once 'classes/class-map-post-type.php';
 
 $my_acf         = new HandleAcf();
 $my_mapbox      = new HandleMapbox();
 $my_theme       = new CustomizeTheme();
 $my_storage     = new MangeLocalStorage();
 $my_performance = new AddPerformance();
+
+$map_post_type = new MapPostType();
 
 
 function cookie_update_redirect() {
@@ -40,10 +43,10 @@ function cookie_update_redirect() {
 	if (
 		'/' == $_SERVER['REQUEST_URI'] // you are visiting the main site.
 		&& ! isset( $_COOKIE[ $cookie_name ] ) // you havent visited the main site before.
-	 ) {
+	) {
 		setcookie( $cookie_name, time(), time() + 1209600, SITECOOKIEPATH, COOKIE_DOMAIN, false, true );
 		$pageslug = 'home';
-		wp_redirect( get_site_url() . '/' . $pageslug );
+		wp_safe_redirect( get_site_url() . '/' . $pageslug );
 		exit;
 	}
 }
@@ -151,7 +154,7 @@ function feature_collection( $data ) {
 							'title'               => get_the_title(),
 							'subtitle'            => get_field( 'subtitle' ),
 							'priority'            => intval( $priority ? $priority : 5 ),
-							'excerpt'             => get_the_excerpt(),
+							//'excerpt'             => get_the_excerpt(),
 							'thumbnail'           => get_the_post_thumbnail_url( null, 'medium' ),
 							'location_name'       => get_field( 'location_name' ),
 							'since'               => get_field( 'since' ),
