@@ -16,20 +16,27 @@
  * @todo remove acf frontend dependecy!
  */
 
-require_once 'classes/class-handle-acf.php';
-require_once 'classes/class-handle-mapbox.php';
-require_once 'classes/class-customize-theme.php';
-require_once 'classes/class-manage-local-storage.php';
-require_once 'classes/class-add-performance.php';
-require_once 'classes/class-map-post-type.php';
+require_once 'includes/classes/class-handle-acf.php';
+require_once 'includes/classes/class-handle-mapbox.php';
+require_once 'includes/classes/class-customize-theme.php';
+require_once 'includes/classes/class-manage-local-storage.php';
+require_once 'includes/classes/class-add-performance.php';
+require_once 'includes/classes/class-map-post-type.php';
 
-$my_acf         = new HandleAcf();
+
+// add the solution post type. (this is going to be renamed to map).
+$map_post_type = new MapPostType();
+
+// make sure the ACF-Plugin is there and has the relevant API-Keys.
+$my_acf = new HandleAcf();
+
+// add custom fields to the solution post type.
+require_once 'includes/add_custom_fields.php';
+
 $my_mapbox      = new HandleMapbox();
 $my_theme       = new CustomizeTheme();
 $my_storage     = new MangeLocalStorage();
 $my_performance = new AddPerformance();
-
-$map_post_type = new MapPostType();
 
 
 function cookie_update_redirect() {
@@ -38,36 +45,36 @@ function cookie_update_redirect() {
 		return;
 	}
 
-	$cookie_name = 'intro';
+		$cookie_name = 'intro';
 
 	if (
 		'/' == $_SERVER['REQUEST_URI'] // you are visiting the main site.
 		&& ! isset( $_COOKIE[ $cookie_name ] ) // you havent visited the main site before.
-	) {
+		) {
 		setcookie( $cookie_name, time(), time() + 1209600, SITECOOKIEPATH, COOKIE_DOMAIN, false, true );
 		$pageslug = 'home';
 		wp_safe_redirect( get_site_url() . '/' . $pageslug );
 		exit;
 	}
 }
-add_action( 'init', 'cookie_update_redirect' );
+	add_action( 'init', 'cookie_update_redirect' );
 
-/**
- * Checks if the current request is a WP REST API request.
- *
- * Case #1: After WP_REST_Request initialisation
- * Case #2: Support "plain" permalink settings
- * Case #3: URL Path begins with wp-json/ (your REST prefix)
- *          Also supports WP installations in subfolders
- *
- * @returns boolean
- * @author matzeeable
- */
+	/**
+	 * Checks if the current request is a WP REST API request.
+	 *
+	 * Case #1: After WP_REST_Request initialisation
+	 * Case #2: Support "plain" permalink settings
+	 * Case #3: URL Path begins with wp-json/ (your REST prefix)
+	 *          Also supports WP installations in subfolders
+	 *
+	 * @returns boolean
+	 * @author matzeeable
+	 */
 function is_rest() {
 	$prefix = rest_get_url_prefix();
 	if ( defined( 'REST_REQUEST' ) && REST_REQUEST // (#1)
-		|| isset( $_GET['rest_route'] ) // (#2)
-			&& strpos( trim( $_GET['rest_route'], '\\/' ), $prefix, 0 ) === 0 ) {
+	|| isset( $_GET['rest_route'] ) // (#2)
+		&& strpos( trim( $_GET['rest_route'], '\\/' ), $prefix, 0 ) === 0 ) {
 		return true;
 	}
 
@@ -87,14 +94,14 @@ function load_scripts_styles() {
 		wp_deregister_script( 'jquery' );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'load_scripts_styles', 100 );
+	add_action( 'wp_enqueue_scripts', 'load_scripts_styles', 100 );
 
 
-$feature_transient_name = 'feature_transient';
+	$feature_transient_name = 'feature_transient';
 
-add_action( 'save_post_solution', 'delete_solution_transient' );
-add_action( 'update_post_solution', 'delete_solution_transient' );
-add_action( 'delete_post_solution', 'delete_solution_transient' );
+	add_action( 'save_post_solution', 'delete_solution_transient' );
+	add_action( 'update_post_solution', 'delete_solution_transient' );
+	add_action( 'delete_post_solution', 'delete_solution_transient' );
 
 function delete_solution_transient() {
 	global $feature_transient_name;
@@ -102,12 +109,12 @@ function delete_solution_transient() {
 	delete_site_transient( $feature_transient_name );
 }
 
-/**
- * @todo: we can probably think about a better way to posts and features (<-rename them!), so we don't fetch things so redundant.
- *
- * @param [type] $data
- * @return void
- */
+	/**
+	 * @todo: we can probably think about a better way to posts and features (<-rename them!), so we don't fetch things so redundant.
+	 *
+	 * @param [type] $data
+	 * @return void
+	 */
 function feature_collection( $data ) {
 	global $feature_transient_name;
 
@@ -130,7 +137,7 @@ function feature_collection( $data ) {
 		'meta_type'   => 'NUMERIC', // because prio is a number.
 		'meta_key'    => 'priority',
 		'order'       => 'DESC',
-		// 'orderby'                => 'menu_order',
+	// 'orderby'                => 'menu_order',
 	);
 	$query    = new WP_Query( $args );
 	$features = [];
@@ -154,7 +161,7 @@ function feature_collection( $data ) {
 							'title'               => get_the_title(),
 							'subtitle'            => get_field( 'subtitle' ),
 							'priority'            => intval( $priority ? $priority : 5 ),
-							//'excerpt'             => get_the_excerpt(),
+							// 'excerpt'             => get_the_excerpt(),
 							'thumbnail'           => get_the_post_thumbnail_url( null, 'medium' ),
 							'location_name'       => get_field( 'location_name' ),
 							'since'               => get_field( 'since' ),
@@ -208,21 +215,21 @@ function get_edit_url( $object ) {
 	return get_edit_post_link( $object['id'] );
 }
 
-/**
- * Get the value of the "link_relative" field
- *
- * @param array           $object Details of current post.
- * @param string          $field_name Name of field.
- * @param WP_REST_Request $request Current request
- *
- * @return mixed
- */
+	/**
+	 * Get the value of the "link_relative" field
+	 *
+	 * @param array           $object Details of current post.
+	 * @param string          $field_name Name of field.
+	 * @param WP_REST_Request $request Current request
+	 *
+	 * @return mixed
+	 */
 function slug_get_link_relative( $object, $field_name, $request ) {
 	return wp_make_link_relative( $object['link'] );
 }
 
 
-add_action( 'rest_api_init', 'register_routes' );
+	add_action( 'rest_api_init', 'register_routes' );
 function register_routes() {
 	register_rest_route(
 		'map/v1',
@@ -329,29 +336,29 @@ function get_frontpage( $request ) {
 }
 
 
-register_nav_menus(
-	array(
-		'footer' => __( 'Footer', 'blankslate' ),
-	)
-);
-
-
-
-function feature_solution_func( $atts, $content = '' ) {
-	$atts = shortcode_atts(
+	register_nav_menus(
 		array(
-			'class'   => 'md-primary',
-			'content' => '',
-			'style'   => '',
-			'href'    => '',
-		),
-		$atts,
-		'feature_solution'
+			'footer' => __( 'Footer', 'blankslate' ),
+		)
 	);
 
-	$atts['content'] = ( $atts['content'] ) ? $atts['content'] : $content;
 
-	return "
+
+	function feature_solution_func( $atts, $content = '' ) {
+		$atts = shortcode_atts(
+			array(
+				'class'   => 'md-primary',
+				'content' => '',
+				'style'   => '',
+				'href'    => '',
+			),
+			$atts,
+			'feature_solution'
+		);
+
+		$atts['content'] = ( $atts['content'] ) ? $atts['content'] : $content;
+
+		return "
 		<ul class='md-list cat-posts md-triple-line md-theme-z'>
 			<li to='/solution/algramo/' class='md-list-item'>
 			<a
@@ -378,6 +385,6 @@ function feature_solution_func( $atts, $content = '' ) {
 			</li>
 		</ul>
 	";
-}
-add_shortcode( 'feature_solution', 'feature_solution_func' );
+	}
+	add_shortcode( 'feature_solution', 'feature_solution_func' );
 

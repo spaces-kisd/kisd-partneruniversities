@@ -10,9 +10,10 @@ class MapPostType {
 
 	public function __construct() {
 		add_action( 'init', [ $this, 'old_cptui_register_my_cpts' ] ); // delete when done.
-		// add_action( 'init', [ $this, 'new_cptui_register_my_cpts' ] );
+		add_action( 'init', [ $this, 'new_cptui_register_my_cpts' ] );
+
 		add_action( 'init', [ $this, 'old_cptui_register_my_taxes_solutions' ] ); // delete when done.
-		// add_action( 'init', [ $this, 'new_cptui_register_my_taxes_solutions' ] );
+		add_action( 'init', [ $this, 'new_cptui_register_my_taxes_solutions' ] );
 	}
 
 	public function old_cptui_register_my_cpts() {
@@ -168,6 +169,9 @@ class MapPostType {
 		);
 		register_taxonomy( 'solutions', array( 'solution' ), $args );
 	}
+
+
+
 
 }
 
