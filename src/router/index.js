@@ -9,6 +9,9 @@ import Solution from "../components/Types/Solution.vue";
 import PostPage from "../components/Types/PostPage.vue";
 
 Vue.use(Router);
+
+console.log(vueWp);
+const rootPath = vueWp.path;
 /**
  * some examples: https://github.com/vuejs/vue-router/blob/dev/examples/route-matching/app.js
  */
@@ -57,7 +60,7 @@ const router = new Router({
     },
   ],
   mode: "history",
-  base: "",
+  base: rootPath,
 
   // Prevents window from scrolling back to top
   // when navigating between components/views
