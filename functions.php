@@ -2,17 +2,18 @@
 
 require_once 'functions-custom.php';
 
-// Remove all default WP template redirects/lookups
+// Remove all default WP template redirects/lookups.
 remove_action( 'template_redirect', 'redirect_canonical' );
 
-// Redirect all requests to index.php so the Vue app is loaded and 404s aren't thrown
+// Redirect all requests to index.php so the Vue app is loaded and 404s aren't thrown.
 function remove_redirects() {
 	add_rewrite_rule( '^/(.+)/?', 'index.php', 'top' );
 }
 add_action( 'init', 'remove_redirects' );
 
-// Load scripts
+// Load scripts.
 function load_vue_scripts() {
+
 	wp_enqueue_script(
 		'vuejs-wordpress-theme-starter-js',
 		get_stylesheet_directory_uri() . '/dist/scripts/index.min.bundle.js',
@@ -20,12 +21,17 @@ function load_vue_scripts() {
 		filemtime( get_stylesheet_directory() . '/dist/scripts/index.min.bundle.js' ),
 		true
 	);
-	// The nonce is used by axios when accessing the REST-API. If it's not present, your uid is 0. 
+
+	$blog_details = get_blog_details();
+
+	// The nonce is used by axios when accessing the REST-API. If it's not present, your uid is 0.
 	wp_localize_script(
 		'vuejs-wordpress-theme-starter-js',
-		'restAPI',
+		'vueWp',
 		array(
-			'nonce' => wp_create_nonce( 'wp_rest' ),
+			'apiNonce' => wp_create_nonce( 'wp_rest' ),
+			'siteUrl'  => get_site_url(),
+			'path'     => $blog_details->path,
 		)
 	);
 	wp_enqueue_style(

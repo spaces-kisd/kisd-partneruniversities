@@ -1,7 +1,7 @@
 <?php
 /**
  * @done: make sure acf is installed
- * @todo: rename the "solution" post type to "map".
+ *
  * @todo: use the acf-string to customize the map fields in the backend.
  * @see: https://www.advancedcustomfields.com/resources/register-fields-via-php/
  *
@@ -21,6 +21,12 @@ require_once 'includes/classes/class-handle-mapbox.php';
 require_once 'includes/classes/class-customize-theme.php';
 require_once 'includes/classes/class-manage-local-storage.php';
 require_once 'includes/classes/class-add-performance.php';
+
+
+/**
+ * @todo rename the "solution" post type to "map".
+ * @todo rename feature (alias feature-collection) in js & php because its easy to confuse with feature-image and move here.
+ */
 require_once 'includes/classes/class-map-post-type.php';
 
 
@@ -57,32 +63,9 @@ function cookie_update_redirect() {
 		exit;
 	}
 }
-	add_action( 'init', 'cookie_update_redirect' );
+add_action( 'init', 'cookie_update_redirect' );
 
-	/**
-	 * Checks if the current request is a WP REST API request.
-	 *
-	 * Case #1: After WP_REST_Request initialisation
-	 * Case #2: Support "plain" permalink settings
-	 * Case #3: URL Path begins with wp-json/ (your REST prefix)
-	 *          Also supports WP installations in subfolders
-	 *
-	 * @returns boolean
-	 * @author matzeeable
-	 */
-function is_rest() {
-	$prefix = rest_get_url_prefix();
-	if ( defined( 'REST_REQUEST' ) && REST_REQUEST // (#1)
-	|| isset( $_GET['rest_route'] ) // (#2)
-		&& strpos( trim( $_GET['rest_route'], '\\/' ), $prefix, 0 ) === 0 ) {
-		return true;
-	}
 
-	// (#3)
-	$rest_url    = wp_parse_url( site_url( $prefix ) );
-	$current_url = wp_parse_url( add_query_arg( array() ) );
-	return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
-}
 
 function load_scripts_styles() {
 
@@ -94,19 +77,19 @@ function load_scripts_styles() {
 		wp_deregister_script( 'jquery' );
 	}
 }
-	add_action( 'wp_enqueue_scripts', 'load_scripts_styles', 100 );
 
+add_action( 'wp_enqueue_scripts', 'load_scripts_styles', 100 );
 
-	$feature_transient_name = 'feature_transient';
+$feature_transient_name = 'feature_transient';
 
-	add_action( 'save_post_solution', 'delete_solution_transient' );
-	add_action( 'update_post_solution', 'delete_solution_transient' );
-	add_action( 'delete_post_solution', 'delete_solution_transient' );
+add_action( 'save_post_solution', 'delete_solution_transient' );
+add_action( 'update_post_solution', 'delete_solution_transient' );
+add_action( 'delete_post_solution', 'delete_solution_transient' );
 
 function delete_solution_transient() {
 	global $feature_transient_name;
 	error_log( 'del trans' );
-	delete_site_transient( $feature_transient_name );
+	delete_transient( $feature_transient_name );
 }
 
 	/**
@@ -118,14 +101,7 @@ function delete_solution_transient() {
 function feature_collection( $data ) {
 	global $feature_transient_name;
 
-	$feature_collection = get_site_transient( $feature_transient_name );
-
-	if ( false !== $feature_collection ) {
-		// error_log( "return from transient");
-		return $feature_collection;
-	} else {
-		// error_log( "not return from transient");
-	}
+	$feature_collection = get_transient( $feature_transient_name );
 
 	// $data['id']; <- thats how we fetch stuffs...
 	$post_type_name = $data['type'];
@@ -161,12 +137,11 @@ function feature_collection( $data ) {
 							'title'               => get_the_title(),
 							'subtitle'            => get_field( 'subtitle' ),
 							'priority'            => intval( $priority ? $priority : 5 ),
-							// 'excerpt'             => get_the_excerpt(),
 							'thumbnail'           => get_the_post_thumbnail_url( null, 'medium' ),
 							'location_name'       => get_field( 'location_name' ),
 							'since'               => get_field( 'since' ),
 							'number_of_employees' => get_field( 'number_of_employees' ),
-							'link_relative'       => wp_make_link_relative( get_permalink() ),
+							'link_relative'       => make_link_relative_to_blog( get_permalink() ),
 						],
 						'geometry'   => [
 							'type'        => 'Point',
@@ -184,7 +159,7 @@ function feature_collection( $data ) {
 		'type'     => 'FeatureCollection',
 		'features' => $features,
 	];
-	$bool_response      = set_site_transient( $feature_transient_name, $feature_collection, 86400 );
+	$bool_response      = set_transient( $feature_transient_name, $feature_collection, 86400 );
 	// Restore original Post Data.
 	wp_reset_postdata();
 	return $feature_collection;
@@ -215,17 +190,33 @@ function get_edit_url( $object ) {
 	return get_edit_post_link( $object['id'] );
 }
 
-	/**
-	 * Get the value of the "link_relative" field
-	 *
-	 * @param array           $object Details of current post.
-	 * @param string          $field_name Name of field.
-	 * @param WP_REST_Request $request Current request
-	 *
-	 * @return mixed
-	 */
+/**
+ * Get the value of the "link_relative" field
+ *
+ * @param array           $object Details of current post.
+ * @param string          $field_name Name of field.
+ * @param WP_REST_Request $request Current request.
+ *
+ * @return mixed
+ */
 function slug_get_link_relative( $object, $field_name, $request ) {
-	return wp_make_link_relative( $object['link'] );
+	return make_link_relative_to_blog( $object['link'] );
+	// return wp_make_link_relative( $object['link'] );
+}
+
+/**
+ * Remove blog-specific things form a link.
+ * If the link is http://wp.org/blogname/postname
+ * this returns just /postname
+ *
+ * @param string $link absolute link.
+ * @return string relative link.
+ */
+function make_link_relative_to_blog( $link ) {
+	$site_url = get_site_url();
+	$new_link = str_replace( $site_url, '', $link );
+	error_log( $new_link . ' | ' . $site_url . ' | ' . $link );
+	return $new_link;
 }
 
 
@@ -321,12 +312,6 @@ function get_frontpage( $request ) {
 			'post_title'   => 'No static frontpage.',
 			'post_content' => 'Set a static frontpage in the backend under Settings->Reading.',
 		);
-		/*
-			  return new WP_Error(
-			'Notice',
-			esc_html__( 'No Static Frontpage', 'wpse' ),
-			[ 'status' => 404 ]
-		); */
 	}
 	$post->post_content = apply_filters( 'the_content', $post->post_content );
 	$post->thumbnail    = get_the_post_thumbnail_url( $pid, 'large' );
@@ -335,56 +320,33 @@ function get_frontpage( $request ) {
 	return new WP_REST_Response( $post, 200 );
 }
 
-
 	register_nav_menus(
 		array(
 			'footer' => __( 'Footer', 'blankslate' ),
 		)
 	);
 
+	/**
+	 * Checks if the current request is a WP REST API request.
+	 *
+	 * Case #1: After WP_REST_Request initialisation
+	 * Case #2: Support "plain" permalink settings
+	 * Case #3: URL Path begins with wp-json/ (your REST prefix)
+	 *          Also supports WP installations in subfolders
+	 *
+	 * @returns boolean
+	 * @author matzeeable
+	 */
+	function is_rest() {
+		$prefix = rest_get_url_prefix();
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST // (#1)
+		|| isset( $_GET['rest_route'] ) // (#2)
+		&& strpos( trim( $_GET['rest_route'], '\\/' ), $prefix, 0 ) === 0 ) {
+			return true;
+		}
 
-
-	function feature_solution_func( $atts, $content = '' ) {
-		$atts = shortcode_atts(
-			array(
-				'class'   => 'md-primary',
-				'content' => '',
-				'style'   => '',
-				'href'    => '',
-			),
-			$atts,
-			'feature_solution'
-		);
-
-		$atts['content'] = ( $atts['content'] ) ? $atts['content'] : $content;
-
-		return "
-		<ul class='md-list cat-posts md-triple-line md-theme-z'>
-			<li to='/solution/algramo/' class='md-list-item'>
-			<a
-				href='/solution/algramo/'
-				class='md-list-item-router md-list-item-container md-button-clean'
-				mdripple='true'
-			>
-				<div class='md-list-item-content md-ripple'>
-					<div class='cat-feature-container'>
-						<img
-						src='https://zerowastelivinglab.com/wp-content/uploads/2019/02/thumbnaill_algramo-1024x768.png'
-						class='cat-feature'
-						>
-					</div>
-					<div class='md-list-item-text'>
-						<div class='md-title'>Algramo</div> 
-						<span>Reusable Refill System for Everyday Products</span>
-						<div>
-							<p>Algramo offers affordable quantities of everyday products without single-use, non-recyclable packaging</p>
-						</div>
-					</div>
-				</div>
-			</a
-			</li>
-		</ul>
-	";
+		// (#3)
+		$rest_url    = wp_parse_url( site_url( $prefix ) );
+		$current_url = wp_parse_url( add_query_arg( array() ) );
+		return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
 	}
-	add_shortcode( 'feature_solution', 'feature_solution_func' );
-

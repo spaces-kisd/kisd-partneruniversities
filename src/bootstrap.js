@@ -3,12 +3,12 @@ import axios from "axios";
 
 try {
   window._ = require('lodash');
-  //window.$ = window.jQuery = require('jquery');
+
   axios.defaults.headers.common = {
-    "X-WP-Nonce":
-      typeof window.restAPI !== "undefined" ? window.restAPI.nonce : "",
+    "X-WP-Nonce": window.vueWp.apiNonce, // authenticate wordpress with a nonce.
     "X-Requested-With": "XMLHttpRequest"
   };
+  axios.defaults.baseURL = window.vueWp.path; // for network installations of wp.
 } catch (e) {
  //console.log(e);
 }
