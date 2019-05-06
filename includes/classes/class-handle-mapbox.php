@@ -52,7 +52,7 @@ class HandleMapbox {
 		wp_localize_script(
 			'mapbox-gl-js',
 			'mapboxThemeSettings',
-			(array) json_decode( get_option( 'mapbox_api_key', [] ) )
+			(array) json_decode( get_option( 'mapbox_api_key', '' ) )
 		);
 	}
 
