@@ -98,9 +98,6 @@ module.exports = {
     }
   },
   plugins: [
-/*     new webpack.ProvidePlugin({
-      throttle: "lodash.throttle"
-    }), */
     new webpack.optimize.UglifyJsPlugin({
       include: /\.min\.bundle\.js$/,
       minimize: true,
