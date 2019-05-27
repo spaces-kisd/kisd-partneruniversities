@@ -20,6 +20,9 @@
 		<meta property='og:url' content='$abs_url'>
 		<meta property='og:type' content='website'>
 		<meta name='twitter:card' content='summary_large_image'>
+
+		<!-- Script for polyfilling Promises on IE9 and 10 -->
+		<script src='https://cdn.polyfill.io/v2/polyfill.min.js'></script>
 	";
 
 	$url = ( $wp->request == 'home' ) ? site_url() : site_url( $wp->request );
