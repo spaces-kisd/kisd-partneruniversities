@@ -190,6 +190,7 @@ export default {
   top: 0;
   right: 0;
   max-height: 100%;
+  height: 100vh;
 }
 .vertical .swiper-slide {
   height: 180px;
