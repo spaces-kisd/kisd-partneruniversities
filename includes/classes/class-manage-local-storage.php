@@ -2,6 +2,7 @@
 
 /**
  * Delete the local storage if there is new content.
+ *
  * @todo: This can probably done more elegant in Vue.
  */
 class MangeLocalStorage {
@@ -41,10 +42,19 @@ class MangeLocalStorage {
 
 		wp_register_script( 'clear-local-storage', '', array(), '1.0', false );
 		wp_enqueue_script( 'clear-local-storage' );
-		wp_add_inline_script( 'clear-local-storage', 'localStorage.clear(); console.log("new version, local storage cleared.")' );
+		wp_add_inline_script(
+			'clear-local-storage',
+			'localStorage.clear();
+			caches.keys().then(function(names) {
+				for (let name of names){
+					caches.delete(name);
+				}
+			});
+			console.log("new version, local storage & caches cleared.")'
+		);
 
 		/**
-		 * Save a cookie with the most recent update time to the client. 
+		 * Save a cookie with the most recent update time to the client.
 		 */
 		setcookie( $this->cookie_name, $server_version, time() + 1209600, SITECOOKIEPATH, COOKIE_DOMAIN, false, true );
 
