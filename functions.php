@@ -22,7 +22,11 @@ function load_vue_scripts() {
 		true
 	);
 
-	$blog_details = get_blog_details();
+	$path = '/';
+	if ( is_multisite() ){
+		$blog_details = get_blog_details();
+		$path = $blog_details->path;
+	}
 
 	// The nonce is used by axios when accessing the REST-API. If it's not present, your uid is 0.
 	wp_localize_script(
@@ -31,7 +35,7 @@ function load_vue_scripts() {
 		array(
 			'apiNonce' => wp_create_nonce( 'wp_rest' ),
 			'siteUrl'  => get_site_url(),
-			'path'     => $blog_details->path,
+			'path'     => $path
 		)
 	);
 	wp_enqueue_style(
