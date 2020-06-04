@@ -1,6 +1,5 @@
-import _ from "lodash";
-import Vue from "vue";
-import Router from "vue-router";
+import Vue from 'vue';
+import Router from 'vue-router';
 
 // Components
 import Home from "../components/Home.vue";
@@ -70,10 +69,10 @@ const router = new Router({
     } else {
       return { x: 0, y: 0 };
     }
-  }
+  },
 });
 
-router.afterEach((to, from) => {
+router.afterEach((to) => { // (to, from)
   // Add a body class specific to the route we're viewing
   //todo: debug. for categories & custom post types.
 /*   let body = document.querySelector("body");
@@ -86,7 +85,7 @@ router.afterEach((to, from) => {
     newBodyClasses.forEach(c => body.classList.remove(c));
   }
 
-  const slug = _.isEmpty(to.params.postSlug)
+  const slug = !(to.params.postSlug)
     ? to.params.pageSlug
     : to.params.postSlug;
 

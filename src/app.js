@@ -1,13 +1,11 @@
-require("./bootstrap.js");
+import Vue from 'vue';
+require('./bootstrap');
+import './assets/css/styles.css';
 
-import Vue from "vue";
-
-import router from "./router";
-import App from "./App.vue";
-import store from "./store";
-import * as types from "./store/mutation-types";
-
-import "./assets/css/styles.css";
+import router from './router';
+import App from './App.vue';
+import store from './store';
+import * as types from './store/mutation-types';
 
 /* import VueMaterial from 'vue-material'; */
 import { MdButton, MdContent, MdDrawer, MdCard, MdIcon, MdChips, MdProgress, MdList } from 'vue-material/dist/components'
@@ -31,7 +29,7 @@ Vue.material.theming.theme = 'z';
 /* Vue.use(VueMaterial); */
 
 new Vue({
-  el: "#app",
+  el: '#app',
   store,
   router,
   render: h => h(App),

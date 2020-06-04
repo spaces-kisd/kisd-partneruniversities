@@ -1,6 +1,16 @@
+
 node_modules
-dist/
+dist/*
 static/
 vendor/
-.vscode
 composer.lock
+.DS_Store
+Thumbs.db
+package-lock.json
+yarn.lock
+*.log
+# Editor directories and files
+.vscode
+*.code-workspace
+.idea
+

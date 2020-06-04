@@ -1,14 +1,12 @@
-import api from "../../api";
-import _ from "lodash";
-import * as types from "../mutation-types";
-import { isNumber } from "util";
+import api from '../../api';
+import * as types from '../mutation-types';
 
 // initial state
 const state = {
   all: [],
   frontPage: {},
   loaded: false,
-  page: null
+  page: null,
 };
 
 // getters
@@ -16,16 +14,15 @@ const getters = {
   allPages: state => state.all,
   allPagesLoaded: state => state.loaded,
   page: state => id => {
-    let field = typeof id === "number" ? "id" : "slug";
+    let field = typeof id === 'number' ? 'id' : 'slug';
     let page = state.all.filter(page => page[field] === id);
-    return !_.isNull(_.first(page)) ? _.first(page) : false;
+    return (page[0]) ? page[0] : false;
   },
   pageContent: state => id => {
-    let field = typeof id === "number" ? "id" : "slug";
+    let field = typeof id === 'number' ? 'id' : 'slug';
     let page = state.all.filter(page => page[field] === id);
-    return !_.isNull(_.first(page).content.rendered)
-      ? _.first(page).content.rendered
-      : false;
+
+    return (page[0]) ? page[0].content.rendered : false;
   },
   somePages: state => limit => {
     if (state.all.length < 1) {
@@ -57,7 +54,7 @@ const actions = {
       commit(types.STORE_FETCHED_FRONTPAGE, { page });
       //commit(types.FRONTPAGE_LOADED, true);
     });
-  }
+  },
 };
 
 // mutations
@@ -72,12 +69,12 @@ const mutations = {
   },
   [types.PAGES_LOADED](state, val) {
     state.loaded = val;
-  }
+  },
 };
 
 export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

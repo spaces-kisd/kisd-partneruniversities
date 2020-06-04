@@ -5,9 +5,9 @@
       enter-active-class="animated fadeIn"
       leave-active-class="animated fadeOut"
     >
-      <progress-bar/>
+      <progress-bar />
     </transition>
-    <drawer :visible="visible_drawer"/>
+    <drawer :visible="visible_drawer" />
 
     <div :class="['logo-container top', { hidden : visible_drawer }]" style="z-index:1">
       <md-button
@@ -26,12 +26,10 @@
     </div>
 
     <!-- <transition name="fade" mode="out-in"> -->
-    <swiper
-      v-bind:swiperDirection="horizontalOrVertial"
-    />
+    <swiper v-bind:swiperDirection="horizontalOrVertial" />
     <!-- </transition> -->
 
-    <solution-map/>
+    <solution-map />
   </div>
 </template>
 
@@ -57,6 +55,8 @@ import SolutionMap from "./components/partials/SolutionMap.vue";
 import Drawer from "./components/partials/Drawer.vue";
 import Swiper from "./components/partials/Swiper.vue";
 import * as types from "./store/mutation-types.js";
+import Header from "./components/partials/Header.vue";
+// import Footer from "./components/partials/Footer.vue";
 
 export default {
   data() {
@@ -86,7 +86,8 @@ export default {
   mounted() {
     this.$nextTick(function() {
       window.addEventListener(
-        "resize", _.debounce( this.updateWindowWidth, 300 )
+        "resize",
+        _.debounce(this.updateWindowWidth, 300)
       );
       //Init
       this.updateWindowWidth();
@@ -152,7 +153,9 @@ export default {
     ProgressBar,
     SolutionMap,
     Drawer,
-    Swiper
+    Swiper,
+    appHeader: Header
+    //appFooter: Footer
   },
   watch: {
     visible_drawer(val) {
