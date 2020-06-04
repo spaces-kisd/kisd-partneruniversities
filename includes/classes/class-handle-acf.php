@@ -39,9 +39,10 @@ class HandleAcf {
 		 * @see https://www.advancedcustomfields.com/resources/including-acf-within-a-plugin-or-theme/
 		 */
 		if ( ! function_exists( 'get_field' ) ) {
+			$subdir = "/vendor/advancedcustomfields/acf/";
 			// Define path and URL to the ACF plugin.
-			define( 'MY_ACF_PATH', get_stylesheet_directory() . '/includes/advanced-custom-fields/' );
-			define( 'MY_ACF_URL', get_stylesheet_directory_uri() . '/includes/advanced-custom-fields/' );
+			define( 'MY_ACF_PATH', get_stylesheet_directory() . $subdir );
+			define( 'MY_ACF_URL', get_stylesheet_directory_uri() . $subdir );
 
 			// Customize the url setting to fix incorrect asset URLs.
 			add_filter( 'acf/settings/url', array( $this, 'my_acf_settings_url' ) );
