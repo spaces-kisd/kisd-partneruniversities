@@ -1,12 +1,11 @@
-import api from "../../api";
-import _ from "lodash";
-import * as types from "../mutation-types";
+import api from '../../api';
+import * as types from '../mutation-types';
 
 // initial state
 const state = {
   posts: [], //we store aaall the posts (and all post types here).
   recent: [],
-  loaded: false
+  loaded: false,
 };
 
 // getters
@@ -14,9 +13,8 @@ const getters = {
   recentPosts: state => limit => {
     if (
       !limit ||
-      !_.isNumber(limit) ||
-      _.isNull(limit) ||
-      typeof limit == "undefined"
+      !Number.isInteger(limit) ||
+      typeof limit == 'undefined'
     ) {
       return state.recent;
     }
@@ -27,7 +25,7 @@ const getters = {
   recentPostsLoaded: state => state.loaded,
 
   /**
-   * Slugs are unique for each taxonomy. So if you search for a post by slug you wouly have to 
+   * Slugs are unique for each taxonomy. So if you search for a post by slug you wouly have to
    * query {slug: 'abc', type: 'post'}
    * Query args are connected with an AND, so all must be true.
    */
@@ -89,12 +87,12 @@ const mutations = {
   },
   [types.POSTS_LOADED](state, val) {
     state.loaded = val;
-  }
+  },
 };
 
 export default {
   state,
   getters,
   actions,
-  mutations
+  mutations,
 };

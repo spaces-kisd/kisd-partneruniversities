@@ -13,12 +13,11 @@ add_action( 'init', 'remove_redirects' );
 
 // Load scripts.
 function load_vue_scripts() {
-
 	wp_enqueue_script(
 		'vuejs-wordpress-theme-starter-js',
-		get_stylesheet_directory_uri() . '/dist/scripts/index.min.bundle.js',
+		get_stylesheet_directory_uri() . '/dist/scripts/index.js',
 		array(),
-		filemtime( get_stylesheet_directory() . '/dist/scripts/index.min.bundle.js' ),
+		filemtime( get_stylesheet_directory() . '/dist/scripts/index.js' ),
 		true
 	);
 
@@ -35,7 +34,7 @@ function load_vue_scripts() {
 		array(
 			'apiNonce' => wp_create_nonce( 'wp_rest' ),
 			'siteUrl'  => get_site_url(),
-			'path'     => $path
+			'path'     => $path,
 		)
 	);
 	wp_enqueue_style(

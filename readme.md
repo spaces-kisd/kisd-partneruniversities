@@ -14,4 +14,6 @@ Run the following (to add advanced-custom fields):
 	composer install
 ```
 
+If you are on windows you need to: `npm install -g win-node-env`.
+
 Then follow the instructions here: https://github.com/EvanAgee/vuejs-wordpress-theme-starter

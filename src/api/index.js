@@ -1,6 +1,5 @@
-import _ from "lodash";
-import axios from "axios";
-import SETTINGS from "../settings";
+import axios from 'axios';
+import SETTINGS from '../settings';
 
 export default {
 
