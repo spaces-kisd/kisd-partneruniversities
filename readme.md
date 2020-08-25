@@ -4,7 +4,7 @@ Thanks to [EvanAgee](https://github.com/EvanAgee) ❤️ for his [vuejs-wordpres
 
 There is still work do be done :)
 
-See it in action here: https://zerowastelivinglab.enviu.org/
+See it in action here: https://zerowasteshowcase.enviu.org/
 
 # Installation
 
