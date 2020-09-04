@@ -1,19 +1,28 @@
 # Wordpress, VUE & Mapbox.
-
 Thanks to [EvanAgee](https://github.com/EvanAgee) ❤️ for his [vuejs-wordpress-theme-starter](https://github.com/EvanAgee/vuejs-wordpress-theme-starter) !
+Refactored to use a vue-cli build process.
 
 There is still work do be done :)
 
-See it in action here: https://zerowasteshowcase.enviu.org/
-
-# Installation
-
-Run the following (to add advanced-custom fields):
-
-```bash
-	composer install
+## Project setup
+```
+npm install
 ```
 
-If you are on windows you need to: `npm install -g win-node-env`.
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
-Then follow the instructions here: https://github.com/EvanAgee/vuejs-wordpress-theme-starter
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

@@ -6,7 +6,7 @@
 			"type": "package",
 			"package": {
 				"name": "advancedcustomfields/acf",
-				"version": "5.8.11",
+				"version": "5.9.0",
 				"source": {
 					"url": "https://github.com/AdvancedCustomFields/acf",
 					"type": "git",
