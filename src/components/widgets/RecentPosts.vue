@@ -13,25 +13,25 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
   props: ['limit'],
   computed: {
     ...mapGetters({
       recentPosts: 'recentPosts',
-      recentPostsLoaded: 'recentPostsLoaded',
-    }),
+      recentPostsLoaded: 'recentPostsLoaded'
+    })
   },
 
   methods: {
-    getAuthor(post) {
-      console.log(post);
-    },
+    getAuthor (post) {
+      console.log(post)
+    }
   },
 
-  mounted() {
-    this.$store.dispatch('getPosts', { limit: this.limit });
-  },
-};
+  mounted () {
+    this.$store.dispatch('getPosts', { limit: this.limit })
+  }
+}
 </script>

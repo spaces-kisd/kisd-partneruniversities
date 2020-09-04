@@ -1,2 +1,2 @@
 // For global getters
-export default () => {};
+export default () => {}

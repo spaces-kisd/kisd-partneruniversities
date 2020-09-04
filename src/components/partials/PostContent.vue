@@ -1,22 +1,20 @@
 <template>
   <md-content class="post-content" v-html="content"></md-content>
-  <!-- {{post.post_content}} -->
-  <!-- 	{{post}} -->
 </template>
 
 <script>
 export default {
-  data() {
-    return {};
+  data () {
+    return {}
   },
   props: {
-    content: "",
+    content: '',
     options: {
-      //these are the defaults, change if you want ;)
+      // these are the defaults, change if you want ;)
       showAuthor: true
     }
   }
-};
+}
 </script>
 
 <style>
@@ -52,19 +50,6 @@ cite {
   font-size: 0.8em;
 }
 
-.wp-block-embed-youtube,
-.wp-block-embed-vimeo {
-  margin: 0;
-  padding-top: 59%;
-  position: relative;
-}
-.wp-block-embed-youtube iframe,
-.wp-block-embed-vimeo iframe {
-  top: 0;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-}
 .user-button a {
   color: inherit !important;
   text-decoration: none !important;

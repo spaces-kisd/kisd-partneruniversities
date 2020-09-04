@@ -11,23 +11,17 @@ const state = {
 // getters
 const getters = {
   // Returns an array all categories
-  allCategories: state => state.all,
-  getCategory: state => catId => {
-    return state.all.find( function(el){
-      return (el.id == catId);
-    })
-  },
-  allCategoriesLoaded: state => state.loaded,
-  getCategories: state => query => {
+  allCategories: (state) => state.all,
+  getCategory: (state) => (catId) => state.all.find((el) => (el.id == catId)),
+  allCategoriesLoaded: (state) => state.loaded,
+  getCategories: (state) => (query) => {
     if (!state.all.length) {
-      return;
+      return
     }
-    //console.log('cats state', state.all, query);
-    var keys = _.keys(query);
-    let filtered = state.all.filter((single) => {
-      return keys.every( key => { return single[key] == query[key] } )
-    });
-    return filtered;
+    // console.log('cats state', state.all, query);
+    const keys = _.keys(query)
+    const filtered = state.all.filter((single) => keys.every((key) => single[key] == query[key]))
+    return filtered
   }
 }
 
@@ -38,7 +32,7 @@ const actions = {
     api.get(
       taxonomy,
       { sort: 'name', hide_empty: 'false', per_page: 100 },
-      categories => {
+      (categories) => {
         commit(types.STORE_FETCHED_CATEGORIES, { categories })
         commit(types.CATEGORIES_LOADED, true)
         commit(types.INCREMENT_LOADING_PROGRESS)
@@ -50,12 +44,12 @@ const actions = {
 // mutations
 const mutations = {
   [types.STORE_FETCHED_CATEGORIES] (state, { categories }) {
-    if ( !_.isUndefined(categories)){
-      state.all = categories.concat(state.all);
+    if (!_.isUndefined(categories)) {
+      state.all = categories.concat(state.all)
     } else {
-      console.log( 'no cats fetched.')
+      console.log('no cats fetched.')
     }
-    //state.all = categories
+    // state.all = categories
   },
   [types.CATEGORIES_LOADED] (state, bool) {
     state.loaded = bool

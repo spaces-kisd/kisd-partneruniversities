@@ -11,25 +11,37 @@ function remove_redirects() {
 }
 add_action( 'init', 'remove_redirects' );
 
+/* function v_include_scripts( $name, $subdir_path ){} */
+
 // Load scripts.
 function load_vue_scripts() {
+	$subdir_file = '/dist/js/chunk-vendors.js';
 	wp_enqueue_script(
-		'vuejs-wordpress-theme-starter-js',
-		get_stylesheet_directory_uri() . '/dist/scripts/index.js',
+		'vuejs-js-chunk-vendors',
+		get_stylesheet_directory_uri() . $subdir_file,
 		array(),
-		filemtime( get_stylesheet_directory() . '/dist/scripts/index.js' ),
+		filemtime( get_stylesheet_directory() . $subdir_file ),
+		true
+	);
+
+	$subdir_file = '/dist/js/app.js';
+	wp_enqueue_script(
+		'vuejs-js-app',
+		get_stylesheet_directory_uri() . $subdir_file,
+		array(),
+		filemtime( get_stylesheet_directory() . $subdir_file ),
 		true
 	);
 
 	$path = '/';
-	if ( is_multisite() ){
+	if ( is_multisite() ) {
 		$blog_details = get_blog_details();
 		$path = $blog_details->path;
 	}
 
 	// The nonce is used by axios when accessing the REST-API. If it's not present, your uid is 0.
 	wp_localize_script(
-		'vuejs-wordpress-theme-starter-js',
+		'vuejs-js-app',
 		'vueWp',
 		array(
 			'apiNonce' => wp_create_nonce( 'wp_rest' ),
@@ -37,12 +49,23 @@ function load_vue_scripts() {
 			'path'     => $path,
 		)
 	);
+
+	$subdir_file = '/dist/css/app.css';
 	wp_enqueue_style(
-		'vuejs-wordpress-theme-starter-css',
-		get_stylesheet_directory_uri() . '/dist/styles.css',
+		'vuejs-app',
+		get_stylesheet_directory_uri() . $subdir_file,
 		null,
-		filemtime( get_stylesheet_directory() . '/dist/styles.css' )
+		filemtime( get_stylesheet_directory() . $subdir_file )
 	);
+
+	$subdir_file = '/dist/css/chunk-vendors.css';
+	wp_enqueue_style(
+		'vuejs-chunk-vendors',
+		get_stylesheet_directory_uri() . $subdir_file,
+		null,
+		filemtime( get_stylesheet_directory() . $subdir_file )
+	);
+
 	wp_enqueue_style( 'material-icons', 'https://fonts.googleapis.com/icon?family=Material+Icons#asyncload', array() );
 }
 add_action( 'wp_enqueue_scripts', 'load_vue_scripts', 100 );

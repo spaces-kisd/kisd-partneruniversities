@@ -4,35 +4,34 @@
   </transition>
 </template>
 
-
 <script>
-import axios from "axios";
-import { mapGetters } from "vuex";
-import SETTINGS from "../../settings";
+import axios from 'axios'
+import SETTINGS from '../../settings'
+
 export default {
-  data() {
+  data () {
     return {
       footer: false
-    };
+    }
   },
   computed: {},
-  beforeMount() {
-    this.getFooter();
+  beforeMount () {
+    this.getFooter()
   },
   methods: {
-    getFooter: function() {
+    getFooter () {
       axios
-        .get("/wp-json/map/v1/menus/" + "footer")
-        .then(response => {
-          this.footer = response.data;
+        .get('/wp-json/map/v1/menus/' + 'footer')
+        .then((response) => {
+          this.footer = response.data
         })
-        .catch(e => {
-          console.log(e);
-        });
+        .catch((e) => {
+          console.log(e)
+        })
     }
   },
   components: []
-};
+}
 </script>
 <style>
 .menu-footer-container {

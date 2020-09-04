@@ -23,48 +23,49 @@
 </template>
 
 <script>
-import Loader from "../partials/Loader.vue";
-import { mapGetters } from "vuex";
-import ContentCard from "../partials/ContentCard.vue";
-import PostContent from "../partials/PostContent.vue";
-import * as types from "../../store/mutation-types";
+import { mapGetters } from 'vuex'
+import Loader from '../partials/Loader.vue'
+import ContentCard from '../partials/ContentCard.vue'
+import PostContent from '../partials/PostContent.vue'
+import * as types from '../../store/mutation-types'
+import * as _ from 'lodash'
 
 export default {
-  data() {
+  data () {
     return {
       router: this.$router
-    };
+    }
   },
-  props: ['postType'], //either posts or pages. plural! passed via router.
+  props: ['postType'], // either posts or pages. plural! passed via router.
   computed: {
-    ...mapGetters(["getPosts"]),
-    localContent() {
-      let posts = this.getPosts({ slug: this.$route.params.slug });
-      if ( ! _.isEmpty(posts) ){
+    ...mapGetters(['getPosts']),
+    localContent () {
+      const posts = this.getPosts({ slug: this.$route.params.slug })
+      if (!_.isEmpty(posts)) {
         console.log(posts)
-        this.$store.commit(types.INCREMENT_LOADING_PROGRESS);
-        return _.first(posts);
+        this.$store.commit(types.INCREMENT_LOADING_PROGRESS)
+        return _.first(posts)
       }
     }
   },
-  mounted(){
+  mounted () {
     /* this.fetch(); */
-    this.fetch();
+    this.fetch()
   },
-  //this is the right hook for a link change with the same component (not triggering when leaving the comp)
-  beforeRouteUpdate(to, from, next) {
-    next();
-    this.fetch();
+  // this is the right hook for a link change with the same component (not triggering when leaving the comp)
+  beforeRouteUpdate (to, from, next) {
+    next()
+    this.fetch()
   },
   methods: {
-    fetch(){
+    fetch () {
       if (_.isEmpty(this.localContent)) {
-        this.$store.commit(types.RESET_LOADING_PROGRESS);
-        console.log('RESET_LOADING_PROGRESS');
-        this.$store.dispatch("fetchPostTypes", {
+        this.$store.commit(types.RESET_LOADING_PROGRESS)
+        console.log('RESET_LOADING_PROGRESS')
+        this.$store.dispatch('fetchPostTypes', {
           type: this.postType,
           slug: this.$route.params.slug
-        });
+        })
       }
     }
   },
@@ -73,5 +74,5 @@ export default {
     ContentCard,
     PostContent
   }
-};
+}
 </script>

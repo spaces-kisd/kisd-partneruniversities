@@ -3,118 +3,119 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
 /* import mapboxgl from "mapbox-gl";
 window.mapboxgl = mapboxgl; */
-import MapConfig from "./SolutionMapHelper.js";
-import { mapGetters, mapState, mapMutations } from "vuex";
-import * as types from "../../store/mutation-types";
+import { mapGetters, mapState, mapMutations } from 'vuex'
+import MapConfig from './SolutionMapHelper.js'
+import * as types from '../../store/mutation-types'
+import * as _ from 'lodash'
 
 export default {
-  data() {
+  data () {
     return {
       post: false,
       myMap: false
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getSelected", "visible_single", "getSelectedFeature"])
+    ...mapGetters(['getSelected', 'visible_single', 'getSelectedFeature'])
   },
-  mounted() {
-    var sourceData = [];
-    this.myMap = MapConfig.init();
+  mounted () {
+    let sourceData = []
+    this.myMap = MapConfig.init()
     // disable map rotation using right click + drag
-    this.myMap.dragRotate.disable();
+    this.myMap.dragRotate.disable()
     // disable map rotation using touch rotation gesture
-    this.myMap.touchZoomRotate.disableRotation();
+    this.myMap.touchZoomRotate.disableRotation()
     this.myMap.addControl(
       new mapboxgl.NavigationControl({
         showCompass: false
-        //todo: add mediaquery to hide on mobile.
+        // todo: add mediaquery to hide on mobile.
       }),
-      "bottom-left"
-    );
+      'bottom-left'
+    )
     this.myMap.addControl(
       new mapboxgl.AttributionControl({
         compact: true
       }),
-      "bottom-left"
-    );
-    let added = false;
-    var comp = this;
+      'bottom-left'
+    )
+    let added = false
+    const comp = this
     /* var types = types; */
-    comp.myMap.on("sourcedata", sourceCallback);
+    comp.myMap.on('sourcedata', sourceCallback)
 
-    axios.get("/wp-json/map/v1/features/solution").then(response => {
-      sourceData = response.data;
-      sourceCallback();
-    });
+    axios.get('/wp-json/map/v1/features/solution').then((response) => {
+      sourceData = response.data
+      sourceCallback()
+    })
 
-    function sourceCallback(e) {
+    function sourceCallback (e) {
       if (comp.myMap.isStyleLoaded() && !added && !_.isEmpty(sourceData)) {
-        added = true;
-        MapConfig.addData(comp.myMap, sourceData);
-        MapConfig.addEvents(comp.myMap);
-        comp.myMap.on("click", "unclustered-point", function(e) {
-          //console.log("soluton_map commit", e.features[0].properties);
+        added = true
+        MapConfig.addData(comp.myMap, sourceData)
+        MapConfig.addEvents(comp.myMap)
+        comp.myMap.on('click', 'unclustered-point', (e) => {
+          // console.log("soluton_map commit", e.features[0].properties);
           comp.$store.commit(
             types.FEATURE_SELECTED,
             e.features[0].properties.feature_id
-          );
-          comp.$router.push(e.features[0].properties.link_relative);
-        });
+          )
+          comp.$router.push(e.features[0].properties.link_relative)
+        })
       }
 
-      if (comp.myMap.getSource("solutions") && comp.myMap.isSourceLoaded) {
-        //console.log('loaded source', MapConfig.getAllVisible(comp.myMap));
-        //console.log(this.myMap.getSource("solutions"));
-        //console.log(this.myMap.querySourceFeatures('solutions', {filter : ''}));
+      if (comp.myMap.getSource('solutions') && comp.myMap.isSourceLoaded) {
+        // console.log('loaded source', MapConfig.getAllVisible(comp.myMap));
+        // console.log(this.myMap.getSource("solutions"));
+        // console.log(this.myMap.querySourceFeatures('solutions', {filter : ''}));
       }
     }
 
-    this.myMap.on("moveend", function() {
+    this.myMap.on('moveend', () => {
       /*       if (comp.myMap) {
         MapConfig.getAllVisible(comp.myMap).then( function( features ) {
           comp.$store.commit(types.STORE_VISIBLE_FEATURES, features );
         });
       } */
-    });
+    })
   },
-  beforeMount() {
-    //this.getPost();
+  beforeMount () {
+    // this.getPost();
   },
   watch: {
-    getSelected(newValue, oldValue) {
-      //console.log("watch feature", newValue);
-      //console.log(this.myMap);
+    getSelected (newValue, oldValue) {
+      // console.log("watch feature", newValue);
+      // console.log(this.myMap);
       /*       this.myMap.easeTo({
         center: newValue.geometry.coordinates
       }); */
 
-      var rect = document.getElementById("map").getBoundingClientRect();
-      var viewportX = [rect.bottom];
-      var shiftScreen = viewportX;
-      var offsetX = 0;
-      //console.log('this.visible_single', this.visible_single)
+      const rect = document.getElementById('map').getBoundingClientRect()
+      const viewportX = [rect.bottom]
+      const shiftScreen = viewportX
+      let offsetX = 0
+      // console.log('this.visible_single', this.visible_single)
       if (window.innerWidth > 650 && this.visible_single) {
-        offsetX = 650 + (window.innerWidth - 650) / 2 - window.innerWidth / 2;
+        offsetX = 650 + (window.innerWidth - 650) / 2 - window.innerWidth / 2
       }
-      //console.log('offsetX', offsetX);
+      // console.log('offsetX', offsetX);
 
       if (!_.isUndefined(this.getSelectedFeature)) {
         this.myMap.flyTo({
           center: this.getSelectedFeature.geometry.coordinates,
           offset: [offsetX, 0],
           zoom: Math.min(this.myMap.getZoom() + 1, 8)
-        });
-        //console.log('geo', this.getSelectedFeature.geometry);
+        })
+        // console.log('geo', this.getSelectedFeature.geometry);
       }
-      //console.log(newValue.geometry.coordinates);
+      // console.log(newValue.geometry.coordinates);
     }
   },
   methods: {},
   components: {}
-};
+}
 </script>
 
 <style>
@@ -134,7 +135,8 @@ body {
   right: 17px;
 }
 @media only screen and (max-width: 1280px) {
- .mapboxgl-ctrl-group, .mapboxgl-compact {
+  .mapboxgl-ctrl-group,
+  .mapboxgl-compact {
     display: none;
   }
 }
@@ -152,8 +154,3 @@ body {
   margin-right: 300px;
 }
 </style>
-
-
-
-
-

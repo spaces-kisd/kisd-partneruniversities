@@ -22,36 +22,35 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapMutations } from "vuex";
+import { mapGetters } from 'vuex'
 
-//https://vuematerial.io/components/card/
+// https://vuematerial.io/components/card/
 export default {
   props: {
     feature: {
       type: Object
-    },
-    index: 0
-  }, //['title', 'href', 'slug', 'data'],
-  data() {
+    }
+  }, // ['title', 'href', 'slug', 'data'],
+  data () {
     return {
       router: this.$router,
       selected: false
-    };
+    }
   },
   computed: {
-    ...mapGetters([ "getSelected" ])
+    ...mapGetters(['getSelected'])
   },
   methods: {
-    selectionChanged(f) {}
+    selectionChanged (f) {}
   },
   components: {
-    //router: this.router
+    // router: this.router
   },
-  updated() {
-    //console.log("after");
+  updated () {
+    // console.log("after");
   },
   watch: {}
-};
+}
 </script>
 <style>
 

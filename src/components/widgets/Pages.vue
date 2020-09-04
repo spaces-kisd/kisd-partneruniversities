@@ -37,17 +37,17 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
   props: ['limit'],
   computed: {
     ...mapGetters({
       somePages: 'somePages',
-      allPagesLoaded: 'allPagesLoaded',
-    }),
+      allPagesLoaded: 'allPagesLoaded'
+    })
   },
 
-  mounted() {},
-};
+  mounted () {}
+}
 </script>

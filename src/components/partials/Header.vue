@@ -54,7 +54,7 @@
   </nav>
 </template>
 
-<style type="postcss" scoped>
+<style scoped>
 .logo-cls-1 {
   fill: #ffffff;
 }
