@@ -22,20 +22,21 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex'
+import * as _ from 'lodash'
+
 export default {
-  props: ["categories"],
+  props: ['categories'],
   computed: {
-    ...mapGetters(["getCategory"])
+    ...mapGetters(['getCategory'])
   },
   methods: {
-    getCat(catId) {
-      return this.getCategory(catId);
+    getCat (catId) {
+      return this.getCategory(catId)
     },
-    unescape( $c ){
-      return _.unescape($c);
+    unescape ($c) {
+      return _.unescape($c)
     }
   }
-};
+}
 </script>
-

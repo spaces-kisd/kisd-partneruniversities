@@ -12,37 +12,38 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from "vuex";
+import { mapGetters } from 'vuex'
+
 export default {
-  data() {
+  data () {
     return {
       showLoader: true
-    };
+    }
   },
   computed: {
-    ...mapGetters(["loadingProgress", "isLoading"]),
-    loaderStyle() {
-      return `width: ${this.loadingProgress}%;`;
+    ...mapGetters(['loadingProgress', 'isLoading']),
+    loaderStyle () {
+      return `width: ${this.loadingProgress}%;`
     }
   },
   watch: {
     // watch the value of isLoading and once it's false hide the loader
-    isLoading(val) {
-      console.log('isLoading', val );
-      //self.showLoader = val;
-      let self = this;
+    isLoading (val) {
+      console.log('isLoading', val)
+      // self.showLoader = val;
+      const self = this
       if (val == false) {
-        setTimeout(function() {
-          self.showLoader = false;
-        }, 1500);
+        setTimeout(() => {
+          self.showLoader = false
+        }, 1500)
       } else {
-        setTimeout(function() {
-          self.showLoader = true;
-        }, 100);
+        setTimeout(() => {
+          self.showLoader = true
+        }, 100)
       }
     }
   }
-};
+}
 </script>
 <style>
 .loader {

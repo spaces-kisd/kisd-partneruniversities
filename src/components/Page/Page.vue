@@ -9,31 +9,31 @@
 </template>
 
 <script>
-import Loader from '../partials/Loader.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
+import Loader from '../partials/Loader.vue'
 
 export default {
   computed: {
     ...mapGetters({
       page: 'page',
-      allPagesLoaded: 'allPagesLoaded',
+      allPagesLoaded: 'allPagesLoaded'
     }),
 
-    pageContent() {
-      return this.page(this.$route.params.pageSlug);
-    },
+    pageContent () {
+      return this.page(this.$route.params.pageSlug)
+    }
   },
 
   components: {
-    Loader,
-  },
-};
+    Loader
+  }
+}
 </script>
 
-<style type="postcss" scoped>
-.page-content {
+<style scoped>
+/* .page-content {
   & >>> p {
     margin-bottom: 1rem;
   }
-}
+} */
 </style>

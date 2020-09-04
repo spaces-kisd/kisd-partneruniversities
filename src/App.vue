@@ -34,78 +34,75 @@
 </template>
 
 <script>
-/**
- * todo: axios/isURLSameOrigin.js <- can we use this?
- *
- *
- * Think about performance (size), bundle.js
- * - mapbox.gl -> via cdn. it's okay if it loads later
- * - swiper -> via cdn.
- * - lodash
- * - vue material
- *
- * Move custom zerowaste-styles to a seperate css file and include it in the backend (gutenberg).
- *
- *
- */
-
-import { mapGetters, mapActions, mapMutations } from "vuex";
-import ProgressBar from "./components/partials/ProgressBar.vue";
-import SolutionMap from "./components/partials/SolutionMap.vue";
-import Drawer from "./components/partials/Drawer.vue";
-import Swiper from "./components/partials/Swiper.vue";
-import * as types from "./store/mutation-types.js";
-import Header from "./components/partials/Header.vue";
+import { mapGetters } from 'vuex'
+import ProgressBar from './components/partials/ProgressBar.vue'
+import SolutionMap from './components/partials/SolutionMap.vue'
+import Drawer from './components/partials/Drawer.vue'
+import Swiper from './components/partials/Swiper.vue'
+import * as types from './store/mutation-types'
+import * as _ from 'lodash'
 // import Footer from "./components/partials/Footer.vue";
 
 export default {
-  data() {
+  data () {
     return {
       showLoader: true,
       router: this.$router,
       windowWidth: 0
-    };
-  },
-  computed: {
-    ...mapGetters(["frontPage", "visible_drawer", "visible_single"]),
-    horizontalOrVertial() {
-      let hv = this.windowWidth < 1280 ? "horizontal" : "vertical";
-      console.log(hv);
-      return hv;
     }
   },
-  beforeMount() {
+  computed: {
+    ...mapGetters(['frontPage', 'visible_drawer', 'visible_single']),
+    horizontalOrVertial () {
+      const hv = this.windowWidth < 1280 ? 'horizontal' : 'vertical'
+      console.log(hv)
+      return hv
+    }
+  },
+  components: {
+    ProgressBar,
+    SolutionMap,
+    Drawer,
+    Swiper
+    // appFooter: Footer
+  },
+  watch: {
+    visible_drawer (val) {
+      return val
+    }
+  },
+  beforeMount () {
     /* this.$store.commit(types.VISIBLE_SINGLE, false);
     this.$store.commit(types.VISIBLE_DRAWER, false); */
   },
   methods: {
-    updateWindowWidth(event) {
-      this.windowWidth = document.documentElement.clientWidth;
+    updateWindowWidth (event) {
+      this.windowWidth = document.documentElement.clientWidth
     }
   },
-  mounted() {
-    this.$nextTick(function() {
+  mounted () {
+    this.$nextTick(function () {
       window.addEventListener(
-        "resize",
+        'resize',
         _.debounce(this.updateWindowWidth, 300)
-      );
-      //Init
-      this.updateWindowWidth();
-    });
+      )
+      // Init
+      this.updateWindowWidth()
+    })
     // close all the things on pressing esc.
-    document.body.addEventListener("keyup", e => {
+    document.body.addEventListener('keyup', (e) => {
       if (e.keyCode === 27) {
-        //esc.
-        this.$router.push("/");
+        // esc.
+        this.$router.push('/')
       }
-    });
-    window.addEventListener("click", event => {
-      const { target } = event;
-      let link = target.closest("a");
+    })
+    window.addEventListener('click', (event) => {
+      const { target } = event
+      const link = target.closest('a')
 
-      //link.matches("a:not([href*='://'])")
-      if (!link) return;
-      if (!link.href) return;
+      // link.matches("a:not([href*='://'])")
+      if (!link) return
+      if (!link.href) return
 
       // some sanity checks taken from vue-router:
       // https://github.com/vuejs/vue-router/blob/dev/src/components/link.js#L106
@@ -116,53 +113,40 @@ export default {
         shiftKey,
         button,
         defaultPrevented
-      } = event;
+      } = event
       // don't handle with control keys
-      if (metaKey || altKey || ctrlKey || shiftKey) return;
+      if (metaKey || altKey || ctrlKey || shiftKey) return
       // don't handle when preventDefault called
-      if (defaultPrevented) return;
+      if (defaultPrevented) return
       // don't handle right clicks
-      if (button !== undefined && button !== 0) return;
+      if (button !== undefined && button !== 0) return
       // don't handle if `link="_blank"`
       if (link && link.getAttribute) {
-        const linkTarget = link.getAttribute("target");
-        if (/\b_blank\b/i.test(linkTarget)) return;
+        const linkTarget = link.getAttribute('target')
+        if (/\b_blank\b/i.test(linkTarget)) return
       }
 
-      const url = new URL(link.href);
-      const to = url.pathname;
+      const url = new URL(link.href)
+      const to = url.pathname
 
       // open external links and wp-admin-links in new window.
       if (
         link.matches("a[href*='/wp-admin/']") ||
         url.host != window.location.host
       ) {
-        event.preventDefault();
-        window.open(url, "_blank");
-        return;
+        event.preventDefault()
+        window.open(url, '_blank')
+        return
       }
 
       // don't handle same page links/anchors
       if (window.location.pathname !== to && event.preventDefault) {
-        event.preventDefault();
-        this.$router.push(to);
+        event.preventDefault()
+        this.$router.push(to)
       }
-    });
-  },
-  components: {
-    ProgressBar,
-    SolutionMap,
-    Drawer,
-    Swiper,
-    appHeader: Header
-    //appFooter: Footer
-  },
-  watch: {
-    visible_drawer(val) {
-      return val;
-    }
+    })
   }
-};
+}
 </script>
 <style>
 #my-app {

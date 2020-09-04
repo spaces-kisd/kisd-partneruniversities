@@ -73,69 +73,67 @@
 /**
  * @todo: select the right feature!
  */
-import axios from "axios";
-import Loader from "../partials/Loader.vue";
-import { mapGetters } from "vuex";
-import SETTINGS from "../../settings";
-import PostContent from "../partials/PostContent.vue";
-import * as types from "../../store/mutation-types.js";
-import ProgressBar from "../partials/ProgressBar.vue";
-import ContentCard from "../partials/ContentCard.vue";
-import CategoryChips from "../partials/CategoryChips.vue";
+import axios from 'axios'
+import { mapGetters } from 'vuex'
+import Loader from '../partials/Loader.vue'
+import SETTINGS from '../../settings'
+import PostContent from '../partials/PostContent.vue'
+import * as types from '../../store/mutation-types.js'
+import ProgressBar from '../partials/ProgressBar.vue'
+import ContentCard from '../partials/ContentCard.vue'
+import CategoryChips from '../partials/CategoryChips.vue'
 
 export default {
-  data() {
+  data () {
     return {
       router: this.$router,
-      edit: "",
+      edit: '',
       loading: true
-    };
+    }
   },
   computed: {
-    ...mapGetters(["getFeatures", "getPosts", "featuresLoaded"]),
-    myPost() {
-      let posts = this.getPosts({ slug: this.$route.params.postSlug });
-      if ( ! _.isEmpty(posts) ) {
-        this.loading = false;
-        return _.first(posts);
-      } else {
-        console.log( 'No post found for slug', this.$route.params.postSlug, posts);
+    ...mapGetters(['getFeatures', 'getPosts', 'featuresLoaded']),
+    myPost () {
+      const posts = this.getPosts({ slug: this.$route.params.postSlug })
+      if (!_.isEmpty(posts)) {
+        this.loading = false
+        return _.first(posts)
       }
+      console.log('No post found for slug', this.$route.params.postSlug, posts)
     },
-    editUrl() {
+    editUrl () {
       if (this.myPost) {
-        return this.myPost.edit_url;
+        return this.myPost.edit_url
       }
     },
-    postCats() {
-      console.log(this.myPost);
+    postCats () {
+      console.log(this.myPost)
       if (!_.isUndefined(this.myPost)) {
-        return this.myPost.solution_categories;
+        return this.myPost.solution_categories
       }
-      return false;
+      return false
     },
-    fProps() {
-      let feature = this.getFeatures({ slug: this.$route.params.postSlug });
-      //console.log('ftr', feature);
-      if ( ! _.isUndefined( feature )) {
-        if (feature.length != 0 ) {
-          return _.first(feature).properties;
+    fProps () {
+      const feature = this.getFeatures({ slug: this.$route.params.postSlug })
+      // console.log('ftr', feature);
+      if (!_.isUndefined(feature)) {
+        if (feature.length != 0) {
+          return _.first(feature).properties
         }
       }
-      console.log( 'feature was not found', feature, 'for slug', this.$route.params.postSlug);
-      this.loading = false;
+      console.log('feature was not found', feature, 'for slug', this.$route.params.postSlug)
+      this.loading = false
       return {
-        title: "Looks like this solution does not exist.",
-        subtitle: "Check out another one :)"
+        title: 'Looks like this solution does not exist.',
+        subtitle: 'Check out another one :)'
       }
-      //return this.getFeature({ slug: this.$route.params.postSlug });
+      // return this.getFeature({ slug: this.$route.params.postSlug });
     },
-    getFeatureImage() {
+    getFeatureImage () {
       if (this.myPost) {
-        return this.myPost.feature.large;
-      } else {
-        return this.fProps.thumbnail;
+        return this.myPost.feature.large
       }
+      return this.fProps.thumbnail
     }
   },
   components: {
@@ -145,33 +143,33 @@ export default {
     ContentCard,
     CategoryChips
   },
-  mounted() {
+  mounted () {
     console.log('solution mounted')
-    this.init();
+    this.init()
   },
-  update() {
+  update () {
     console.log('solution updated')
-    this.init();
+    this.init()
   },
-  beforeRouteUpdate(to, from, next) {
-    next();
-    this.init();
+  beforeRouteUpdate (to, from, next) {
+    next()
+    this.init()
   },
   methods: {
-    init() {
+    init () {
       if (!this.myPost) {
-        this.$store.dispatch("fetchPostTypes", {
-          type: "solutions",
+        this.$store.dispatch('fetchPostTypes', {
+          type: 'solutions',
           slug: this.$route.params.postSlug
-        });
+        })
       }
       this.$store.commit(
         types.STORE_SELECT_FEATURE_BY_POST_SLUG,
         this.$route.params.postSlug
-      );
+      )
     }
   }
-};
+}
 </script>
 <style>
 .solution-props {

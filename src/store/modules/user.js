@@ -9,7 +9,7 @@ const state = {
 
 // getters
 const getters = {
-  userId: state => state.id,
+  userId: (state) => state.id
 }
 
 // actions

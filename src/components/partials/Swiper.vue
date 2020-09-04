@@ -18,46 +18,46 @@
 <script>
 /* import "swiper/dist/css/swiper.css";
 import Swiper from "swiper/dist/js/swiper.esm.bundle"; */
-import SwiperCard from "./SwiperCard.vue";
-import { mapGetters, mapState, mapMutations } from "vuex";
-import * as types from "../../store/mutation-types";
+import { mapGetters, mapState, mapMutations } from 'vuex'
+import SwiperCard from './SwiperCard.vue'
+import * as types from '../../store/mutation-types'
 
 export default {
-  data() {
+  data () {
     return {
       swiper: false,
       isHidden: true,
       virtualData: {
         slides: []
       }
-    };
+    }
   },
-  mounted() {
-    this.$store.dispatch("getFeatureCollection");
+  mounted () {
+    this.$store.dispatch('getFeatureCollection')
   },
-  props: ["swiperDirection"],
+  props: ['swiperDirection'],
   components: {
-    //swiper: swiper,
+    // swiper: swiper,
     SwiperCard
   },
   computed: {
-    ...mapState(["feature.collection"]),
+    ...mapState(['feature.collection']),
     ...mapGetters([
-      "recentPosts",
-      "getAllFeatures",
-      "getFeatures",
-      "getVisibleFeatureIds",
-      "featuresLoaded",
-      "recentPostsLoaded",
-      "getSelected"
+      'recentPosts',
+      'getAllFeatures',
+      'getFeatures',
+      'getVisibleFeatureIds',
+      'featuresLoaded',
+      'recentPostsLoaded',
+      'getSelected'
     ]),
     ...mapMutations({
       setSlide: types.FEATURE_SELECTED
     }),
-    getVisibleFeatures: function() {
-      console.log("gaf", this.getAllFeatures);
+    getVisibleFeatures () {
+      console.log('gaf', this.getAllFeatures)
 
-      return this.getAllFeatures; //.slice(0,25);
+      return this.getAllFeatures // .slice(0,25);
       /*       //getVisibleFeatures: state => state.collection.features.slice(0, 3),
       var vIds = this.getVisibleFeatureIds;
       var features = this.getFeatures( { "post_id": this.getVisibleFeatureIds} );
@@ -66,28 +66,28 @@ export default {
     }
   },
   methods: {
-    initSwiper(features) {
-      const self = this;
+    initSwiper (features) {
+      const self = this
 
       /** wait until vue has actually rendered the features. */
-      console.log("initSwiper", features, self.swiperDirection);
-      self.swiper = new Swiper(".swiper-container", {
-        init: true, //init things later...
+      console.log('initSwiper', features, self.swiperDirection)
+      self.swiper = new Swiper('.swiper-container', {
+        init: true, // init things later...
         speed: 400,
         spaceBetween: 0,
-        slidesPerView: "auto",
-        centeredSlides: "true",
-        slidesPerColumnFill: "column",
+        slidesPerView: 'auto',
+        centeredSlides: 'true',
+        slidesPerColumnFill: 'column',
         virtual: {
           slides: self.getVisibleFeatures,
-          renderExternal(data) {
+          renderExternal (data) {
             // assign virtual slides data
-            self.virtualData = data;
+            self.virtualData = data
           }
         },
         /* slideActiveClass: "swiper-slide-active", */
         direction: self.swiperDirection,
-        //loop: true, // @see https://github.com/surmon-china/vue-awesome-swiper/issues/440.
+        // loop: true, // @see https://github.com/surmon-china/vue-awesome-swiper/issues/440.
         lazy: {
           loadPrevNext: true
         },
@@ -105,52 +105,52 @@ export default {
             direction: "vertical"
           }
         }, */
-      });
+      })
 
-      setTimeout(function() {
-        self.isHidden = false;
-        //self.swiper.changeDirection(self.swiperDirection);
-        console.log("show swiper");
-      }, 1000);
+      setTimeout(() => {
+        self.isHidden = false
+        // self.swiper.changeDirection(self.swiperDirection);
+        console.log('show swiper')
+      }, 1000)
 
-      //self.swiper.init();
-      self.swiper.slideTo(3);
+      // self.swiper.init();
+      self.swiper.slideTo(3)
 
-      self.swiper.on("slideChange", () => {
-        self.$store.commit(types.FEATURE_SELECTED, self.swiper.realIndex);
-      });
+      self.swiper.on('slideChange', () => {
+        self.$store.commit(types.FEATURE_SELECTED, self.swiper.realIndex)
+      })
     },
-    isActiveSlide(index) {
-      return index == this.swiper.realIndex;
+    isActiveSlide (index) {
+      return index == this.swiper.realIndex
     }
   },
   watch: {
-    getAllFeatures: function(features) {
+    getAllFeatures (features) {
       if (this.swiper) {
-        console.log("already setup");
-        return;
+        console.log('already setup')
+        return
       }
-      const self = this;
-      setTimeout(function() {
-        self.initSwiper(features);
-      }, 80);
+      const self = this
+      setTimeout(() => {
+        self.initSwiper(features)
+      }, 80)
     },
-    swiperDirection: function(val) {
-      console.log("changed to", val, this.swiper);
+    swiperDirection (val) {
+      console.log('changed to', val, this.swiper)
       if (this.swiper) {
-        this.swiper.changeDirection(val);
+        this.swiper.changeDirection(val)
       }
     },
-    getSelected(val) {
+    getSelected (val) {
       if (!this.swiper) {
-        return 0;
+        return 0
       }
       if (this.swiper.realIndex != val) {
-        this.swiper.slideToLoop(val);
+        this.swiper.slideToLoop(val)
       }
     }
   }
-};
+}
 </script>
 
 <style>

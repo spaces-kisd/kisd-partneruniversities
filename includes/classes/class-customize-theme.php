@@ -15,6 +15,8 @@ class CustomizeTheme {
 		// Add Theme Support for wide and full - width images .
 		add_theme_support( 'align-wide' );
 
+		add_theme_support( 'responsive-embeds' );
+
 		/**
 		 * Hide the admin bar.
 		 */
@@ -35,9 +37,9 @@ class CustomizeTheme {
 		$file_uri    = get_template_directory_uri() . $file_subdir;
 		$file_local  = get_template_directory() . $file_subdir;
 
-		if ( file_exists( $file_local ) ) {
+/* 		if ( file_exists( $file_local ) ) {
 			wp_enqueue_style( 'custom-theme', $file_uri, array(), filemtime( $file_local ), 'all' );
-		}
+		} */
 
 	}
 

@@ -32,43 +32,42 @@
 /**
  * @todo: select the right feature!
  */
-import axios from "axios";
-import Loader from "../partials/Loader.vue";
-import { mapGetters } from "vuex";
-import SETTINGS from "../../settings";
-import PostContent from "../partials/PostContent.vue";
-import * as types from "../../store/mutation-types.js";
-import ProgressBar from "../partials/ProgressBar.vue";
+import axios from 'axios'
+import { mapGetters } from 'vuex'
+import Loader from './Loader.vue'
+import SETTINGS from '../../settings'
+import PostContent from './PostContent.vue'
+import * as types from '../../store/mutation-types.js'
+import ProgressBar from './ProgressBar.vue'
 
 export default {
-  data() {
+  data () {
     return {
       router: this.$router
-    };
-  },
-  props: ["feature_img", "edit_url", "loading"],
-  methods: {
-    unescape(url) {
-      return _.unescape(url);
     }
   },
-  mounted() {
-    this.$store.commit(types.VISIBLE_SINGLE, true);
+  props: ['feature_img', 'edit_url', 'loading'],
+  methods: {
+    unescape (url) {
+      return _.unescape(url)
+    }
   },
-  update() {
-    this.$store.commit(types.VISIBLE_SINGLE, true);
+  mounted () {
+    this.$store.commit(types.VISIBLE_SINGLE, true)
   },
-  beforeDestroy() {
-    this.$store.commit(types.VISIBLE_SINGLE, false);
+  update () {
+    this.$store.commit(types.VISIBLE_SINGLE, true)
+  },
+  beforeDestroy () {
+    this.$store.commit(types.VISIBLE_SINGLE, false)
   },
   computed: {
     ...mapGetters([])
   },
   components: {
-    Loader,
-    ProgressBar
+    Loader
   }
-};
+}
 </script>
 <style>
 .card-title {

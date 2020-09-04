@@ -14,10 +14,10 @@ Vue.use(Vuex)
 
 const debug = process.env.NODE_ENV !== 'production'
 
-let localStorage = createPersist({
-    namespace: 'Mapper',
-    initialState: {},
-    expires: 1.21e+9 // Two Weeks
+const localStorage = createPersist({
+  namespace: 'Mapper',
+  initialState: {},
+  expires: 1.21e+9 // Two Weeks
 })
 
 export default new Vuex.Store({

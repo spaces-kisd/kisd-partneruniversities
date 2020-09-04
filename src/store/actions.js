@@ -1,2 +1,2 @@
 // for global actions
-export default () => {};
+export default () => {}

@@ -15,7 +15,7 @@
               <img class="cat-feature" v-if="item.feature" :src="item.feature">
         </md-avatar>-->
         <div class="cat-feature-container" v-if="item.feature">
-          <img class="cat-feature" :src="item.feature.thumbnail">
+          <img class="cat-feature" :src="item.feature.thumbnail" />
         </div>
         <!--             <div class="cat-feature-text">
               <a class="md-subheading" :href="item.link">{{item.title.rendered}}</a>
@@ -35,81 +35,78 @@
 
 <script>
 // lists: https://vuematerial.io/components/list
-import Loader from "../partials/Loader.vue";
-import { mapGetters } from "vuex";
-import ContentCard from "../partials/ContentCard.vue";
+import { mapGetters } from 'vuex'
+import Loader from '../partials/Loader.vue'
+import ContentCard from '../partials/ContentCard.vue'
 
 export default {
-  data() {
+  data () {
     return {
       router: this.$router,
       loadingDispatched: false
-    };
+    }
   },
   methods: {
-    unescape($c) {
-      return _.unescape($c);
+    unescape ($c) {
+      return _.unescape($c)
     }
   },
   computed: {
-    ...mapGetters(["page", "allPagesLoaded", "getPosts", "getCategories"]),
-    currentCategory() {
+    ...mapGetters(['page', 'allPagesLoaded', 'getPosts', 'getCategories']),
+    currentCategory () {
       return _.first(
         this.getCategories({ slug: this.$route.params.categorySlug })
-      );
+      )
     },
-    categoryPosts() {
-      let cat = this.currentCategory;
+    categoryPosts () {
+      const cat = this.currentCategory
       if (!_.isUndefined(cat)) {
-        //var postType = cat.
-        let id = cat.id;
+        // var postType = cat.
+        const { id } = cat
 
-        //todo: refactor! think about the naming of the taxonomy! the post-type name is here: wp:post_type
-        if (cat.taxonomy == "category") {
+        // todo: refactor! think about the naming of the taxonomy! the post-type name is here: wp:post_type
+        if (cat.taxonomy == 'category') {
           if (!this.loadingDispatched) {
-            this.loadingDispatched = true;
-            this.$store.dispatch("fetchPostTypes", {
-              type: "posts", //type: "solutions",
+            this.loadingDispatched = true
+            this.$store.dispatch('fetchPostTypes', {
+              type: 'posts', // type: "solutions",
               categories: id,
               per_page: 99
-            });
+            })
           }
           var getPosts = this.getPosts({
             categories: id
-          });
+          })
         } else {
           if (!this.loadingDispatched) {
-            this.loadingDispatched = true;
-            this.$store.dispatch("fetchPostTypes", {
-              type: "solutions",
+            this.loadingDispatched = true
+            this.$store.dispatch('fetchPostTypes', {
+              type: 'solutions',
               categories: id,
               per_page: 99
-            });
+            })
           }
           var getPosts = this.getPosts({
             solution_categories: id
           })
-          if ( ! _.isUndefined(getPosts) ){
-            getPosts.sort(function(a,b){
-              return b.priority - a.priority;
-            });
+          if (!_.isUndefined(getPosts)) {
+            getPosts.sort((a, b) => b.priority - a.priority)
           }
-          console.log(getPosts);
+          console.log(getPosts)
         }
 
-        return getPosts;
+        return getPosts
       }
     }
   },
-  beforeRouteUpdate(to, from, next) {
-    next();
+  beforeRouteUpdate (to, from, next) {
+    next()
   },
   components: {
     Loader,
     ContentCard
   }
-};
+}
 </script>
 <style>
 </style>
-

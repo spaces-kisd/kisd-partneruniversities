@@ -21,37 +21,37 @@
 </template>
 
 <script>
-//todo: scrollbar? https://vuematerial.io/ui-elements/scrollbar
-import { mapGetters, mapActions, mapMutations } from "vuex";
-import PostContent from "./PostContent.vue";
-import SiteFooter from "./SiteFooter.vue";
-import * as types from "../../store/mutation-types.js";
+// todo: scrollbar? https://vuematerial.io/ui-elements/scrollbar
+import { mapGetters } from 'vuex'
+import PostContent from './PostContent.vue'
+import SiteFooter from './SiteFooter.vue'
+import * as types from '../../store/mutation-types.js'
 
 export default {
-  data() {
-    return {};
+  data () {
+    return {}
   },
   methods: {
-    active(val) {
-      if (val == false) {
-        this.$store.commit(types.VISIBLE_DRAWER, false);
-        this.$router.push("/");
-        //when we close the drawer on the home-site we move to a different url.
+    active (val) {
+      if (val === false) {
+        this.$store.commit(types.VISIBLE_DRAWER, false)
+        this.$router.push('/')
+        // when we close the drawer on the home-site we move to a different url.
       }
     }
   },
-  props: ["visible"],
+  props: ['visible'],
   computed: {
-    ...mapGetters(["frontPage", "allPagesLoaded"]),
-    myFrontPage() {
-      return this.frontPage;
+    ...mapGetters(['frontPage', 'allPagesLoaded']),
+    myFrontPage () {
+      return this.frontPage
     }
   },
   components: {
     PostContent,
     SiteFooter
   }
-};
+}
 </script>
 <style>
 .drawer-title {
@@ -76,9 +76,6 @@ export default {
   min-height: 16vh;
   background-size: cover;
   background-position: 50% 40%;
-  /*   display: flex;
-  justify-content: center;
-  align-items: center;  */
 }
 .drawer-thumbnail img {
   object-position: 50% 40%;
@@ -87,5 +84,3 @@ export default {
   height: 20vh;
 }
 </style>
-
-
