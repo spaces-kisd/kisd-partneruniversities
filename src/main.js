@@ -32,7 +32,7 @@ Vue.use(MdList);
 /**
  * todo:remove custom theme.
  */
-//Vue.material.theming.theme = 'z';
+Vue.material.theming.theme = 'z';
 
 new Vue({ // eslint-disable-line no-new
   router,
