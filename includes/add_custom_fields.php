@@ -1,6 +1,6 @@
 <?php
 
-acf_add_local_field_group(
+return
 	array(
 		'key'                   => 'group_5c39cff33b9ec',
 		'title'                 => 'Solutions',
@@ -169,4 +169,4 @@ acf_add_local_field_group(
 		'active'                => true,
 		'description'           => '',
 	)
-);
+;

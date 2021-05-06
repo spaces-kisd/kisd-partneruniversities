@@ -1,7 +1,7 @@
 <?php
 
 /**
- * We use ACF for creating custom fiels in the backend.
+ * We use ACF for creating custom fields in the backend.
  *
  * Makes sure ACF is present and there is an API-Key.
  *
@@ -20,16 +20,15 @@ class HandleAcf {
 	/**
 	 * Constructor
 	 */
-	public function __construct() {
+	public function __construct( $fields ) {
 
 		// Determines whether the current request is for an administrative interface page.
 		if ( is_admin() ) {
 
 			$this->api_key = get_option( 'google_api_key', false );
 			if ( ! $this->api_key ) {
-				add_action( 'admin_notices', array( $this, 'notice_add_api_key' ) );
+				// add_action( 'admin_notices', array( $this, 'notice_add_api_key' ) );
 			}
-
 			add_filter( 'acf/fields/google_map/api', array( $this, 'my_acf_google_map_api' ) );
 		}
 
@@ -38,8 +37,8 @@ class HandleAcf {
 		 *
 		 * @see https://www.advancedcustomfields.com/resources/including-acf-within-a-plugin-or-theme/
 		 */
-		if ( ! function_exists( 'get_field' ) ) {
-			$subdir = "/vendor/advancedcustomfields/acf/";
+		if ( ! function_exists( 'acf_add_local_field_group' ) && is_admin() ) {
+			$subdir = '/vendor/advancedcustomfields/acf/';
 			// Define path and URL to the ACF plugin.
 			define( 'MY_ACF_PATH', get_stylesheet_directory() . $subdir );
 			define( 'MY_ACF_URL', get_stylesheet_directory_uri() . $subdir );
@@ -47,13 +46,30 @@ class HandleAcf {
 			// Customize the url setting to fix incorrect asset URLs.
 			add_filter( 'acf/settings/url', array( $this, 'my_acf_settings_url' ) );
 
-			// Include the ACF plugin.
-			include_once MY_ACF_PATH . 'acf.php';
+			//if ( ! class_exists( 'ACF' ) ) {
+			$this->missing_acf_message();
+			//}
+		} else {
+			acf_add_local_field_group( $fields );
 		}
 
 		add_filter( 'option_active_plugins', array( $this, 'disable_acf_on_frontend' ) );
 		add_action( 'admin_init', array( $this, 'register_fields' ) );
 
+	}
+
+	public function missing_acf_message() {
+		$msg = 'Make sure the plugin "Advanced Custom Fields" is installed and active.';
+		if ( is_admin() || 'wp-login.php' === $GLOBALS['pagenow'] ) {
+			add_action(
+				'admin_notices',
+				function() use ( $msg ) {
+					echo "<div class='notice notice-error'><p>$msg</p></div>";
+				}
+			);
+		} else {
+			wp_die( $msg );
+		}
 	}
 
 	/**
@@ -91,7 +107,7 @@ class HandleAcf {
 		}
 
 		foreach ( $plugins as $i => $plugin ) {
-			if (  $plugin === 'advanced-custom-fields/acf.php' ) {
+			if ( 'advanced-custom-fields/acf.php' === $plugin ) {
 				unset( $plugins[ $i ] );
 			}
 		}
@@ -121,7 +137,6 @@ class HandleAcf {
 				<p>$msg</p>
 			</div>
 		";
-
 	}
 
 	/**
