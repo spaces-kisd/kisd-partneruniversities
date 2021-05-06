@@ -1,12 +1,12 @@
 {
-	"name": "schuhwerk/vuejs-wordpress-theme-starter",
+	"name": "schuhwerk/vuejs-mapbox-wordpress-theme-starter",
 	"type": "wordpress-theme",
 	"repositories": {
 		"acf": {
 			"type": "package",
 			"package": {
 				"name": "advancedcustomfields/acf",
-				"version": "5.9.0",
+				"version": "5.9.5",
 				"source": {
 					"url": "https://github.com/AdvancedCustomFields/acf",
 					"type": "git",
