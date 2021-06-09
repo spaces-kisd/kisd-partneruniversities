@@ -170,11 +170,11 @@ export default {
         'circle-color': [
           'step',
           ['get', 'point_count'],
-          '#51bbd6',
+          '#ED624B',
           100,
-          '#f1f075',
+          '#ED624B',
           750,
-          '#f28cb1'
+          '#ED624B'
         ],
         'circle-radius': [
           'step',
@@ -206,7 +206,7 @@ export default {
       source: 'solutions',
       filter: ['!', ['has', 'point_count']],
       paint: {
-        'circle-color': '#11b4da',
+        'circle-color': '#ED624B',
         'circle-radius': 10,
         'circle-stroke-width': 1,
         'circle-stroke-color': '#fff'

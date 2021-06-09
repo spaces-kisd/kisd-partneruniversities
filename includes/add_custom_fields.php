@@ -7,8 +7,8 @@ return
 		'fields'                => array(
 			array(
 				'key'               => 'field_5c6ed46e408d5',
-				'label'             => 'Subtitle',
-				'name'              => 'subtitle',
+				'label'             => 'full_name',
+				'name'              => 'full_name',
 				'type'              => 'text',
 				'instructions'      => 'A few words that describe the Solution.',
 				'required'          => 1,
@@ -46,8 +46,8 @@ return
 			),
 			array(
 				'key'               => 'field_5c5d96eefee18',
-				'label'             => 'Since',
-				'name'              => 'since',
+				'label'             => 'deadline',
+				'name'              => 'deadline',
 				'type'              => 'number',
 				'instructions'      => 'Add a Year.',
 				'required'          => 0,

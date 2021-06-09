@@ -23,7 +23,7 @@
         </div>-->
         <div class="md-list-item-text">
           <div class="md-title">{{item.title.rendered}}</div>
-          <span v-if="item.subtitle">{{item.subtitle}}</span>
+          <span v-if="item.full_name">{{item.full_name}}</span>
           <div v-html="item.excerpt.rendered"></div>
           <!-- <p>I'll be in your neighborhood doing errands this week. Do you want to meet?</p> -->
         </div>
