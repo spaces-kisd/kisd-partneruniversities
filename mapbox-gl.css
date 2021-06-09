@@ -454,7 +454,7 @@ a.mapboxgl-ctrl-logo.mapboxgl-compact {
 }
 
 .mapboxgl-user-location-dot {
-    background-color: #1da1f2;
+    background-color: #ED624B;
     width: 15px;
     height: 15px;
     border-radius: 50%;
@@ -462,7 +462,7 @@ a.mapboxgl-ctrl-logo.mapboxgl-compact {
 }
 
 .mapboxgl-user-location-dot::before {
-    background-color: #1da1f2;
+    background-color: #ED624B;
     content: '';
     width: 15px;
     height: 15px;

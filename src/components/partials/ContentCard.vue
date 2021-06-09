@@ -96,6 +96,7 @@ export default {
   max-width: 620px;
   margin: calc(1% + 10px);
   margin-top: 100px;
+  background: #fff;
 }
 .vertical .content-card {
   margin-bottom: 120px;

@@ -9,7 +9,7 @@
   >
     <md-card-header>
       <div class="card-title md-display-1">{{ fProps.title }}</div>
-      <div class="card-subtitle md-subheading">{{ fProps.subtitle }}</div>
+      <div class="card-full-name md-subheading">{{ fProps.full_name }}</div>
       <!--       <md-card-content>
       <div class="md-layout">
         <div class="md-layout-item">
@@ -49,20 +49,39 @@
           :options="{showAuthor: 'eee'}"
         />
       </md-card-area>
-      <md-card-area class="solution-props">
-        <!--  https://material.io/tools/icons/?style=baseline -->
+      <md-card-area>
         <span v-if="fProps.location_name">
           <md-icon>location_on</md-icon>
           {{fProps.location_name}}
         </span>
-        <span v-if="fProps.since">
-          <!-- <md-icon>business</md-icon> -->
-          Since {{fProps.since}}
+        </md-card-area>
+      <md-card-area>
+     <span v-if="fProps.website">
+          <md-icon>language</md-icon>
+          <a :href="fProps.website" target="_blank">{{fProps.website}}</a>
         </span>
-        <span v-if="fProps.number_of_employees">
-          <md-icon>people</md-icon>
-          {{fProps.number_of_employees}} employees
+         </md-card-area>
+      <md-card-area>
+         <span v-if="fProps.contact">
+          <md-icon>mail_outline</md-icon>
+          {{fProps.contact}}
         </span>
+      </md-card-area>
+      <md-card-area class="solution-props">
+        <!--  https://material.io/tools/icons/?style=baseline -->
+        <span v-if="fProps.department">
+          <b>Department/s:</b>
+          {{fProps.department}}
+        </span>
+        <!-- <span v-if="fProps.erasmus_code">
+          <md-icon>vpn_key</md-icon>
+          {{fProps.erasmus_code}}
+        </span> -->
+      </md-card-area>
+      <md-card-area>
+        <span v-if="fProps.deadline">
+            <b>Application deadline:</b> {{fProps.deadline}}
+             </span>
       </md-card-area>
     </md-card-content>
   </content-card>
@@ -125,7 +144,7 @@ export default {
       this.loading = false
       return {
         title: 'Looks like this solution does not exist.',
-        subtitle: 'Check out another one :)'
+        full_name: 'Check out another one :)'
       }
       // return this.getFeature({ slug: this.$route.params.postSlug });
     },

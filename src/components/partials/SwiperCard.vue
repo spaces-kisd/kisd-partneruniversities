@@ -14,7 +14,7 @@
       <md-card-area>
         <md-card-header>
           <span class="md-title">{{ feature.properties.title }}</span>
-          <span class="md-subheading">{{ feature.properties.subtitle }}</span>
+          <span class="md-subheading">{{ feature.properties.full_name }}</span>
         </md-card-header>
       </md-card-area>
     </md-card-media-cover>
@@ -22,14 +22,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState, mapMutations } from "vuex";
 
 // https://vuematerial.io/components/card/
 export default {
   props: {
     feature: {
       type: Object
-    }
+    },
+    index: 0
   }, // ['title', 'href', 'slug', 'data'],
   data () {
     return {
@@ -57,24 +58,26 @@ export default {
 .swiper-card .md-card-header {
   padding: 2% 4.5%;
 }
-
+.md-content p {
+  margin: 0 0 20px 0;
+}
 .swiper-card .md-title {
-  font-size: 2.1em;
+   font-size: 1.6em;
   line-height: 1em;
   padding-bottom: 2px;
 }
 .swiper-card .md-subheading {
-  font-size: 1.3em;
+  font-size: 1.2em;
   line-height: 1.1em;
 }
 
-.swiper-card .md-card-backdrop {
+/* ..swiper-card .md-card-backdrop {
   background: linear-gradient(
     rgba(0, 0, 0, 0) 30%,
     rgba(0, 0, 0, 0.4) 66%,
     rgba(0, 0, 0, 0.7) 100%
   ) !important;
-}
+} */
 
 @media only screen and (max-width: 900px) {
   .swiper-card .md-title {

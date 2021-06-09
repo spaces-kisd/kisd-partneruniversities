@@ -136,12 +136,15 @@ function feature_collection( $data ) {
 							'post_id'             => get_the_ID(),
 							'slug'                => $post->post_name,
 							'title'               => get_the_title(),
-							'subtitle'            => get_field( 'subtitle' ),
+							'full_name'            => get_field( 'full_name' ),
 							'priority'            => intval( $priority ? $priority : 5 ),
 							'thumbnail'           => get_the_post_thumbnail_url( null, 'medium' ),
 							'location_name'       => get_field( 'location_name' ),
-							'since'               => get_field( 'since' ),
-							'number_of_employees' => get_field( 'number_of_employees' ),
+							'deadline'            => get_field( 'deadline' ),
+							'website'			  => get_field( 'website' ),
+							'contact'			  => get_field( 'contact' ),
+							'erasmus_code'		  => get_field( 'erasmus_code' ),
+							'department'		  => get_field( 'department' ),
 							'link_relative'       => make_link_relative_to_blog( get_permalink() ),
 						),
 						'geometry'   => array(
@@ -172,8 +175,8 @@ function menu_callback( $data ) {
 	die();
 }
 
-function get_subtitle( $object ) {
-	return get_field( 'subtitle', $object['id'] );
+function get_full_name( $object ) {
+	return get_field( 'full_name', $object['id'] );
 }
 
 function get_priority( $object ) {
@@ -282,9 +285,9 @@ function register_routes() {
 	);
 	register_rest_field(
 		array( 'post', 'solution', 'page' ),
-		'subtitle',
+		'full_name',
 		array(
-			'get_callback'    => 'get_subtitle',
+			'get_callback'    => 'full_name',
 			'update_callback' => null,
 			'schema'          => null,
 		)
