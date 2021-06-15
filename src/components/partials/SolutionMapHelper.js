@@ -196,7 +196,10 @@ export default {
       layout: {
         'text-field': '{point_count_abbreviated}',
         'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-        'text-size': 12
+        'text-size': 13
+      },
+      paint: {
+        'text-color': '#fff'
       }
     })
 
