@@ -69,3 +69,9 @@ function load_vue_scripts() {
 	wp_enqueue_style( 'material-icons', 'https://fonts.googleapis.com/icon?family=Material+Icons#asyncload', array() );
 }
 add_action( 'wp_enqueue_scripts', 'load_vue_scripts', 100 );
+
+//Workaround for Spaces Editor: Should be changend
+add_action('wp_enqueue_scripts', 'disable_pluginsjs_selectively', 100 );
+function disable_pluginsjs_selectively( ) {
+   wp_deregister_script( 'vuejs');
+}
