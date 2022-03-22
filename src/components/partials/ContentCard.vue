@@ -32,7 +32,6 @@
 /**
  * @todo: select the right feature!
  */
-import axios from 'axios'
 import { mapGetters } from 'vuex'
 import Loader from './Loader.vue'
 import SETTINGS from '../../settings'

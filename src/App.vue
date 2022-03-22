@@ -34,14 +34,13 @@
 </template>
 
 <script>
-import { mapGetters , mapActions, mapMutations }  from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import ProgressBar from './components/partials/ProgressBar.vue'
 import SolutionMap from './components/partials/SolutionMap.vue'
 import Drawer from './components/partials/Drawer.vue'
 import Swiper from './components/partials/Swiper.vue'
 import * as types from './store/mutation-types'
 import * as _ from 'lodash'
-// import Footer from "./components/partials/Footer.vue";
 
 export default {
   data () {
