@@ -47,6 +47,8 @@ $my_storage     = new MangeLocalStorage();
 $my_performance = new AddPerformance();
 
 add_action( 'wp_ajax_users_on_post', 'Users_On_Post::ajax' );
+add_filter( 'load_spaces_editor_dependencies', '__return_false' );
+
 
 function cookie_update_redirect() {
 	// we are not interested in ajax or rest requests.
@@ -91,7 +93,6 @@ add_action( 'delete_post_solution', 'delete_solution_transient' );
 
 function delete_solution_transient() {
 	global $feature_transient_name;
-	error_log( 'del trans' );
 	delete_transient( $feature_transient_name );
 }
 
@@ -221,12 +222,12 @@ function slug_get_link_relative( $object, $field_name, $request ) {
 function make_link_relative_to_blog( $link ) {
 	$site_url = get_site_url();
 	$new_link = str_replace( $site_url, '', $link );
-	error_log( $new_link . ' | ' . $site_url . ' | ' . $link );
+	// error_log( $new_link . ' | ' . $site_url . ' | ' . $link );
 	return $new_link;
 }
 
 
-	add_action( 'rest_api_init', 'register_routes' );
+add_action( 'rest_api_init', 'register_routes' );
 function register_routes() {
 	register_rest_route(
 		'map/v1',
@@ -234,6 +235,7 @@ function register_routes() {
 		array(
 			'methods'  => 'GET',
 			'callback' => 'get_frontpage',
+			'permission_callback' => '__return_true',
 		)
 	);
 
@@ -245,6 +247,7 @@ function register_routes() {
 		array(
 			'methods'  => 'GET',
 			'callback' => 'feature_collection',
+			'permission_callback' => '__return_true',
 		)
 	);
 
@@ -255,6 +258,7 @@ function register_routes() {
 		array(
 			'methods'  => 'GET',
 			'callback' => 'menu_callback',
+			'permission_callback' => '__return_true',
 		)
 	);
 
@@ -326,33 +330,33 @@ function get_frontpage( $request ) {
 	return new WP_REST_Response( $post, 200 );
 }
 
-	register_nav_menus(
-		array(
-			'footer' => __( 'Footer', 'blankslate' ),
-		)
-	);
+register_nav_menus(
+	array(
+		'footer' => __( 'Footer', 'blankslate' ),
+	)
+);
 
-	/**
-	 * Checks if the current request is a WP REST API request.
-	 *
-	 * Case #1: After WP_REST_Request initialisation
-	 * Case #2: Support "plain" permalink settings
-	 * Case #3: URL Path begins with wp-json/ (your REST prefix)
-	 *          Also supports WP installations in subfolders
-	 *
-	 * @returns boolean
-	 * @author matzeeable
-	 */
-	function is_rest() {
-		$prefix = rest_get_url_prefix();
-		if ( defined( 'REST_REQUEST' ) && REST_REQUEST // (#1)
-		|| isset( $_GET['rest_route'] ) // (#2)
-		&& strpos( trim( $_GET['rest_route'], '\\/' ), $prefix, 0 ) === 0 ) {
-			return true;
-		}
-
-		// (#3)
-		$rest_url    = wp_parse_url( site_url( $prefix ) );
-		$current_url = wp_parse_url( add_query_arg( array() ) );
-		return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+/**
+ * Checks if the current request is a WP REST API request.
+ *
+ * Case #1: After WP_REST_Request initialisation
+ * Case #2: Support "plain" permalink settings
+ * Case #3: URL Path begins with wp-json/ (your REST prefix)
+ *          Also supports WP installations in subfolders
+ *
+ * @returns boolean
+ * @author matzeeable
+ */
+function is_rest() {
+	$prefix = rest_get_url_prefix();
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST // (#1)
+	|| isset( $_GET['rest_route'] ) // (#2)
+	&& strpos( trim( $_GET['rest_route'], '\\/' ), $prefix, 0 ) === 0 ) {
+		return true;
 	}
+
+	// (#3)
+	$rest_url    = wp_parse_url( site_url( $prefix ) );
+	$current_url = wp_parse_url( add_query_arg( array() ) );
+	return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+}

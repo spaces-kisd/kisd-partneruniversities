@@ -86,11 +86,6 @@ export default {
   },
   watch: {
     getSelected (newValue, oldValue) {
-      // console.log("watch feature", newValue);
-      // console.log(this.myMap);
-      /*       this.myMap.easeTo({
-        center: newValue.geometry.coordinates
-      }); */
 
       const rect = document.getElementById('map').getBoundingClientRect()
       const viewportX = [rect.bottom]
@@ -100,7 +95,6 @@ export default {
       if (window.innerWidth > 650 && this.visible_single) {
         offsetX = 650 + (window.innerWidth - 650) / 2 - window.innerWidth / 2
       }
-      // console.log('offsetX', offsetX);
 
       if (!_.isUndefined(this.getSelectedFeature)) {
         this.myMap.flyTo({
@@ -108,9 +102,7 @@ export default {
           offset: [offsetX, 0],
           zoom: Math.min(this.myMap.getZoom() + 1, 8)
         })
-        // console.log('geo', this.getSelectedFeature.geometry);
       }
-      // console.log(newValue.geometry.coordinates);
     }
   },
   methods: {},

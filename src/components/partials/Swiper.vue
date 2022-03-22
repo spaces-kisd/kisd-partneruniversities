@@ -55,8 +55,7 @@ export default {
       setSlide: types.FEATURE_SELECTED
     }),
     getVisibleFeatures () {
-      console.log('gaf', this.getAllFeatures)
-
+      // console.log('gaf', this.getAllFeatures)
       return this.getAllFeatures // .slice(0,25);
       /*       //getVisibleFeatures: state => state.collection.features.slice(0, 3),
       var vIds = this.getVisibleFeatureIds;
@@ -70,7 +69,7 @@ export default {
       const self = this
 
       /** wait until vue has actually rendered the features. */
-      console.log('initSwiper', features, self.swiperDirection)
+      // console.log('initSwiper', features, self.swiperDirection)
       self.swiper = new Swiper('.swiper-container', {
         init: true, // init things later...
         speed: 400,
@@ -191,7 +190,7 @@ export default {
   right: 0;
   height: 100vh;
   max-height: 100%;
- 
+
 }
 .vertical .swiper-slide {
   height: 180px;

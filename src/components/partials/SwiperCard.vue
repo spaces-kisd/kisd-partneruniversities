@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapMutations } from "vuex";
+import { mapGetters } from 'vuex'
 
 // https://vuematerial.io/components/card/
 export default {
@@ -70,14 +70,6 @@ export default {
   font-size: 1.2em;
   line-height: 1.1em;
 }
-
-/* ..swiper-card .md-card-backdrop {
-  background: linear-gradient(
-    rgba(0, 0, 0, 0) 30%,
-    rgba(0, 0, 0, 0.4) 66%,
-    rgba(0, 0, 0, 0.7) 100%
-  ) !important;
-} */
 
 @media only screen and (max-width: 900px) {
   .swiper-card .md-title {
