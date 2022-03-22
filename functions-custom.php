@@ -21,6 +21,7 @@ require_once 'includes/classes/class-handle-mapbox.php';
 require_once 'includes/classes/class-customize-theme.php';
 require_once 'includes/classes/class-manage-local-storage.php';
 require_once 'includes/classes/class-add-performance.php';
+require_once 'includes/classes/class-users-on-post.php';
 
 
 /**
@@ -45,6 +46,7 @@ $my_theme       = new CustomizeTheme();
 $my_storage     = new MangeLocalStorage();
 $my_performance = new AddPerformance();
 
+add_action( 'wp_ajax_users_on_post', 'Users_On_Post::ajax' );
 
 function cookie_update_redirect() {
 	// we are not interested in ajax or rest requests.

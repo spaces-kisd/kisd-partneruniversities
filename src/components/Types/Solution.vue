@@ -10,68 +10,41 @@
     <md-card-header>
       <div class="card-title md-display-1">{{ fProps.title }}</div>
       <div class="card-full-name md-subheading">{{ fProps.full_name }}</div>
-      <!--       <md-card-content>
-      <div class="md-layout">
-        <div class="md-layout-item">
-          <div>
-            <p class="md-caption">Alternative for</p>
-            <md-chip>Something</md-chip>
-            <md-chip>Something</md-chip>
-          </div>
-        </div>
-        <div class="md-layout-item">
-          <div>
-            <p class="md-caption">Business Model</p>
-            <md-chip>Something</md-chip>
-            <md-chip>Something</md-chip>
-            <md-chip>Something</md-chip>
-          </div>
-        </div>
-        <div class="md-layout-item">
-          <div>
-            <p class="md-caption">Stage of Development</p>
-            <md-chip>Something</md-chip>
-            <md-chip>Something</md-chip>
-            <md-chip>Something</md-chip>
-          </div>
-        </div>
-      </div>
-      </md-card-content>-->
     </md-card-header>
     <md-card-content>
       <md-card-area v-if="postCats">
-        <category-chips :categories="postCats"/>
+        <category-chips :categories="postCats" />
       </md-card-area>
       <md-card-area>
         <post-content
-          v-if="(myPost)"
+          v-if="myPost"
           :content="myPost.content.rendered"
-          :options="{showAuthor: 'eee'}"
+          :options="{ showAuthor: 'eee' }"
         />
       </md-card-area>
       <md-card-area>
         <span v-if="fProps.location_name">
           <md-icon>location_on</md-icon>
-          {{fProps.location_name}}
+          {{ fProps.location_name }}
         </span>
-        </md-card-area>
+      </md-card-area>
       <md-card-area>
-     <span v-if="fProps.website">
+        <span v-if="fProps.website">
           <md-icon>language</md-icon>
-          <a :href="fProps.website" target="_blank">{{fProps.website}}</a>
+          <a :href="fProps.website" target="_blank">{{ fProps.website }}</a>
         </span>
-         </md-card-area>
+      </md-card-area>
       <md-card-area>
-         <span v-if="fProps.contact">
+        <span v-if="fProps.contact">
           <md-icon>mail_outline</md-icon>
-          {{fProps.contact}}
+          {{ fProps.contact }}
         </span>
       </md-card-area>
       <md-card-area class="solution-props">
         <!--  https://material.io/tools/icons/?style=baseline -->
         <span v-if="fProps.department">
           <b>Department/s:</b>
-          {{fProps.department}}
+          {{ fProps.department }}
         </span>
         <!-- <span v-if="fProps.erasmus_code">
           <md-icon>vpn_key</md-icon>
@@ -80,8 +53,11 @@
       </md-card-area>
       <md-card-area>
         <span v-if="fProps.deadline">
-            <b>Application deadline:</b> {{fProps.deadline}}
-             </span>
+          <b>Application deadline:</b> {{ fProps.deadline }}
+        </span>
+      </md-card-area>
+      <md-card-area>
+        <users-on-post :post-id="fProps.post_id" />
       </md-card-area>
     </md-card-content>
   </content-card>
@@ -92,7 +68,6 @@
 /**
  * @todo: select the right feature!
  */
-import axios from 'axios'
 import { mapGetters } from 'vuex'
 import Loader from '../partials/Loader.vue'
 import SETTINGS from '../../settings'
@@ -101,6 +76,7 @@ import * as types from '../../store/mutation-types.js'
 import ProgressBar from '../partials/ProgressBar.vue'
 import ContentCard from '../partials/ContentCard.vue'
 import CategoryChips from '../partials/CategoryChips.vue'
+import UsersOnPost from '../partials/UsersOnPost.vue'
 
 export default {
   data () {
@@ -140,7 +116,12 @@ export default {
           return _.first(feature).properties
         }
       }
-      console.log('feature was not found', feature, 'for slug', this.$route.params.postSlug)
+      console.log(
+        'feature was not found',
+        feature,
+        'for slug',
+        this.$route.params.postSlug
+      )
       this.loading = false
       return {
         title: 'Looks like this solution does not exist.',
@@ -160,7 +141,8 @@ export default {
     PostContent,
     ProgressBar,
     ContentCard,
-    CategoryChips
+    CategoryChips,
+    UsersOnPost
   },
   mounted () {
     console.log('solution mounted')

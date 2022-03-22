@@ -46,7 +46,9 @@ function load_vue_scripts() {
 		array(
 			'apiNonce' => wp_create_nonce( 'wp_rest' ),
 			'siteUrl'  => get_site_url(),
+			'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 			'path'     => $path,
+			'currentUserId' => get_current_user_id(),
 		)
 	);
 
