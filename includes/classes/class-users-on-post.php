@@ -62,7 +62,12 @@ class Users_On_Post {
 	 * @return array|WP_Error
 	 */
 	public static function get_all_users( int $post_id, int $user_id = 0 ) {
-		return array( array( 'user_id' => 1 ), array( 'user_id' => 2 ) ); // example.
+		$users = get_field( 'students', $post_id );
+		foreach ($users as $user) {
+			$user['user_profile_url'] =  spaces()->blogs_profile->get_profile_url( $user['ID'] );
+			$usersnew[] =$user; 
+		}
+		return $usersnew;
 	}
 
 	/**
@@ -73,7 +78,30 @@ class Users_On_Post {
 	 * @param int $user_id
 	 * @return bool|WP_Error
 	 */
-	public static function add_user( int $post_id, int $user_id ) {}
+	public static function add_user( int $post_id, int $user_id ) {
+		$userexists = 0;
+		$users = get_field( 'students', $post_id, FALSE);
+		if (!empty ($users)) {
+			foreach ($users as $user) {
+				if ($user ==  $user_id){
+					$userexists = 1;
+					break;
+				}
+				else {
+					$userexists = 0;
+				}
+			}
+		}
+		else {
+			$users = array();
+		}
+		if ($userexists != 1) {
+			$users[] = $user_id;
+			// Update with new value.
+			update_field( 'students', $users, $post_id );
+		}
+	
+}
 
 	/**
 	 * Remove a user from a post.
@@ -83,5 +111,19 @@ class Users_On_Post {
 	 * @param int $user_id
 	 * @return bool|WP_Error
 	 */
-	public static function remove_user( int $post_id, int $user_id ) {}
+	public static function remove_user( int $post_id, int $user_id ) {
+		// Get the current value.
+		$users = get_field( 'students', $post_id, FALSE);
+		if (!empty ($users)) {
+			foreach ($users as $key => $user) {
+				if ( $user == $user_id ) {
+					unset($users[$key]);
+					break;
+				}
+			}
+		}
+		// Update with new value.
+		update_field( 'students', $users, $post_id );
+		
+	}
 }
