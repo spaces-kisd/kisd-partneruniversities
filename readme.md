@@ -2,7 +2,7 @@
 Thanks to [EvanAgee](https://github.com/EvanAgee) ❤️ for his [vuejs-wordpress-theme-starter](https://github.com/EvanAgee/vuejs-wordpress-theme-starter) !
 Refactored to use a vue-cli build process.
 
-There is still work do be done :)
+There is still lots of work do be done :)
 
 ## Project setup
 ```
