@@ -13,7 +13,7 @@
  * @todo looks we still fetch things twice...
  * @see cats: http://wp.local/wp-json/wp/v2/categories?sort=name&hide_empty=true&per_page=10
  *
- * @todo remove acf frontend dependecy!
+ * @todo remove acf frontend dependency!
  */
 
 require_once 'includes/classes/class-handle-acf.php';
@@ -29,12 +29,13 @@ require_once 'includes/classes/class-add-performance.php';
  */
 require_once 'includes/classes/class-map-post-type.php';
 
-
 // add the solution post type. (this is going to be renamed to map).
 $map_post_type = new MapPostType();
 
+$fields = include 'includes/add_custom_fields.php';
 // make sure the ACF-Plugin is there and has the relevant API-Keys.
-$my_acf = new HandleAcf();
+$my_acf = new HandleAcf($fields );
+
 
 // add custom fields to the solution post type.
 if ( function_exists( 'acf_add_local_field_group' ) ) {
@@ -59,7 +60,7 @@ function cookie_update_redirect() {
 
 	if (
 		'/' == $_SERVER['REQUEST_URI'] // you are visiting the main site.
-		&& ! isset( $_COOKIE[ $cookie_name ] ) // you havent visited the main site before.
+		&& ! isset( $_COOKIE[ $cookie_name ] ) // you haven't visited the main site before.
 		) {
 		setcookie( $cookie_name, time(), time() + 1209600, SITECOOKIEPATH, COOKIE_DOMAIN, false, true );
 		$pageslug = 'home';
@@ -119,7 +120,7 @@ function feature_collection( $data ) {
 	// 'orderby'                => 'menu_order',
 	);
 	$query    = new WP_Query( $args );
-	$features = [];
+	$features = array();
 
 	if ( $query->have_posts() ) {
 
@@ -132,9 +133,9 @@ function feature_collection( $data ) {
 			if ( ! empty( $location ) ) {
 				array_push(
 					$features,
-					[
+					array(
 						'type'       => 'Feature',
-						'properties' => [
+						'properties' => array(
 							'post_id'             => get_the_ID(),
 							'slug'                => $post->post_name,
 							'title'               => get_the_title(),
@@ -145,12 +146,12 @@ function feature_collection( $data ) {
 							'since'               => get_field( 'since' ),
 							'number_of_employees' => get_field( 'number_of_employees' ),
 							'link_relative'       => make_link_relative_to_blog( get_permalink() ),
-						],
-						'geometry'   => [
+						),
+						'geometry'   => array(
 							'type'        => 'Point',
-							'coordinates' => [ $location['lng'], $location['lat'] ],
-						],
-					]
+							'coordinates' => array( $location['lng'], $location['lat'] ),
+						),
+					)
 				);
 
 			}
@@ -158,10 +159,10 @@ function feature_collection( $data ) {
 	}
 
 	$feature_collection =
-	[
+	array(
 		'type'     => 'FeatureCollection',
 		'features' => $features,
-	];
+	);
 	$bool_response      = set_transient( $feature_transient_name, $feature_collection, 86400 );
 	// Restore original Post Data.
 	wp_reset_postdata();
@@ -228,10 +229,10 @@ function register_routes() {
 	register_rest_route(
 		'map/v1',
 		'/frontpage/',
-		[
+		array(
 			'methods'  => 'GET',
 			'callback' => 'get_frontpage',
-		]
+		)
 	);
 
 	// http://wp.local/wp-json/map/v1/features/solution
@@ -256,7 +257,7 @@ function register_routes() {
 	);
 
 	register_rest_field(
-		[ 'post', 'solution', 'page' ],
+		array( 'post', 'solution', 'page' ),
 		'link_relative',
 		array(
 			'get_callback'    => 'slug_get_link_relative',
@@ -265,7 +266,7 @@ function register_routes() {
 		)
 	);
 	register_rest_field(
-		[ 'post', 'solution', 'page' ],
+		array( 'post', 'solution', 'page' ),
 		'edit_url',
 		array(
 			'get_callback'    => 'get_edit_url',
@@ -274,7 +275,7 @@ function register_routes() {
 		)
 	);
 	register_rest_field(
-		[ 'post', 'solution', 'page' ],
+		array( 'post', 'solution', 'page' ),
 		'feature',
 		array(
 			'get_callback'    => 'get_feature',
@@ -283,7 +284,7 @@ function register_routes() {
 		)
 	);
 	register_rest_field(
-		[ 'post', 'solution', 'page' ],
+		array( 'post', 'solution', 'page' ),
 		'subtitle',
 		array(
 			'get_callback'    => 'get_subtitle',
@@ -292,7 +293,7 @@ function register_routes() {
 		)
 	);
 	register_rest_field(
-		[ 'solution' ],
+		array( 'solution' ),
 		'priority',
 		array(
 			'get_callback'    => 'get_priority',

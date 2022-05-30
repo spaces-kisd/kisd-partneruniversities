@@ -1,5 +1,5 @@
 {
-	"name": "schuhwerk/vuejs-wordpress-theme-starter",
+	"name": "schuhwerk/vuejs-mapbox-wordpress-theme-starter",
 	"type": "wordpress-theme",
 	"repositories": {
 		"acf": {
