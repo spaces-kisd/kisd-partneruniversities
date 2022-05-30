@@ -1,5 +1,15 @@
 .DS_Store
-node_modules
+
+# ignore all files
+node_modules/**
+
+# unignore all folders. empty folders are omitted.
+!node_modules/**/
+!node_modules/swiper/swiper-bundle.min.js
+!node_modules/swiper/swiper.min.css
+!node_modules/mapbox-gl/dist/mapbox-gl.js
+!node_modules/mapbox-gl/dist/mapbox-gl.css
+
 /dist
 
 
