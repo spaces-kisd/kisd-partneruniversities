@@ -37,7 +37,11 @@ $map_post_type = new MapPostType();
 $my_acf = new HandleAcf();
 
 // add custom fields to the solution post type.
-require_once 'includes/add_custom_fields.php';
+if ( function_exists( 'acf_add_local_field_group' ) ) {
+	require_once 'includes/add_custom_fields.php';
+} else {
+	error_log( esc_html__( 'Make sure the Plugin "Advanced Custom Fields" is installed.' ) );
+}
 
 $my_mapbox      = new HandleMapbox();
 $my_theme       = new CustomizeTheme();
@@ -69,9 +73,8 @@ add_action( 'init', 'cookie_update_redirect' );
 
 function load_scripts_styles() {
 
-	wp_enqueue_script( 'swiper', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.min.js', array(), '4.5.0', true );
-	// wp_add_inline.
-	wp_enqueue_style( 'swiper-css', 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css', false, null );
+	wp_enqueue_script( 'swiper', get_stylesheet_directory_uri() . '/node_modules/swiper/swiper-bundle.min.js', array(), '8.1', true );
+	wp_enqueue_style( 'swiper-css', get_stylesheet_directory_uri() . '/node_modules/swiper/swiper.min.css', false, null );
 
 	if ( ! is_admin() ) {
 		wp_deregister_script( 'jquery' );

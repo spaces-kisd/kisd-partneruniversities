@@ -44,13 +44,15 @@ class MangeLocalStorage {
 		wp_enqueue_script( 'clear-local-storage' );
 		wp_add_inline_script(
 			'clear-local-storage',
-			'localStorage.clear();
-			caches.keys().then(function(names) {
-				for (let name of names){
-					caches.delete(name);
-				}
-			});
-			console.log("new version, local storage & caches cleared.")'
+			"localStorage.clear();
+			if (typeof caches !== 'undefined'){
+				caches.keys().then(function(names) {
+					for (let name of names){
+						caches.delete(name);
+					}
+				});
+			}
+			console.log('new version, local storage & caches cleared.')"
 		);
 
 		/**
