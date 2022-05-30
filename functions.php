@@ -24,6 +24,8 @@ function load_vue_scripts() {
 		true
 	);
 
+	wp_deregister_script( 'vuejs' ); // make sure vue is not otherwise included.
+
 	$subdir_file = '/dist/js/app.js';
 	wp_enqueue_script(
 		'vuejs-js-app',
