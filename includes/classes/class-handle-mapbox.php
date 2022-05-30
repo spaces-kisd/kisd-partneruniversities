@@ -22,8 +22,8 @@ class HandleMapbox {
 
 		$this->check_mapbox_settings();
 
-		add_action( 'admin_init', [ $this, 'register_fields' ] );
-		add_action( 'wp_enqueue_scripts', [ $this, 'load_scripts_styles' ], 100 );
+		add_action( 'admin_init', array( $this, 'register_fields' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts_styles' ), 100 );
 
 	}
 
@@ -40,15 +40,14 @@ class HandleMapbox {
 			return;
 		}
 
-		add_action( 'admin_notices', [ $this, 'notice_add_api_key' ] );
+		add_action( 'admin_notices', array( $this, 'notice_add_api_key' ) );
 
 	}
 
 	public function load_scripts_styles() {
 
-		wp_enqueue_script( 'mapbox-gl-js', 'https://cdnjs.cloudflare.com/ajax/libs/mapbox-gl/0.53.1/mapbox-gl.js', array(), '0.53.1', true );
-		// wp_add_inline.
-		wp_enqueue_style( 'mapbox-gl-css', get_template_directory_uri() . '/mapbox-gl.css#asyncload', false, null );
+		wp_enqueue_script( 'mapbox-gl-js', get_stylesheet_directory_uri() . '/node_modules/mapbox-gl/dist/mapbox-gl.js', array(), '1.13.2', true );
+		wp_enqueue_style( 'mapbox-gl-css', get_template_directory_uri() . '/node_modules/mapbox-gl/dist/mapbox-gl.css#asyncload', false, null );
 		wp_localize_script(
 			'mapbox-gl-js',
 			'mapboxThemeSettings',
@@ -64,11 +63,11 @@ class HandleMapbox {
 		register_setting(
 			'general',
 			'mapbox_api_key',
-			[
+			array(
 				'type'              => 'string',
-				'sanitize_callback' => [ $this, 'sanitize_mapbox_settings' ],
+				'sanitize_callback' => array( $this, 'sanitize_mapbox_settings' ),
 				'default'           => null,
-			]
+			)
 		);
 
 		add_settings_field(
@@ -89,13 +88,13 @@ class HandleMapbox {
 	public function fields_html() {
 		$json_value = get_option( 'mapbox_api_key', '' );
 
-		$defaults = [
+		$defaults = array(
 			'accessToken' => '',
 			'container'   => 'map',
 			'style'       => 'mapbox://styles/mapbox/light-v9',
-			'center'      => [ 0, 0 ],
+			'center'      => array( 0, 0 ),
 			'zoom'        => 5,
-		];
+		);
 
 		$val_with_defaults = stripslashes(
 			wp_json_encode(

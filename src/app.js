@@ -1,4 +1,8 @@
 import Vue from 'vue'
+window.Vue = require('vue').default;
+window.VueResource = require('vue-resource');
+window.Vue.use(window.VueResource);
+
 import './assets/css/styles.css'
 
 import {
@@ -36,7 +40,7 @@ new Vue({
   store,
   router,
   render: (h) => h(App),
-  created () {
+  created() {
     this.$store.commit(types.RESET_LOADING_PROGRESS)
     this.$store.dispatch('fetchTaxonomy', 'categories')
     // http://wp.local/wp-json/wp/v2/solution_categories
