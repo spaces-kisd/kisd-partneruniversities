@@ -16,7 +16,7 @@
 		}
 	},
 	"require": {
-		"advancedcustomfields/acf": "5.*"
+		"advancedcustomfields/acf": "5.9.0"
 	},
 	"require-dev": {
 		"wp-coding-standards/wpcs": "2.*",
