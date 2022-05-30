@@ -19,7 +19,7 @@
 		"advancedcustomfields/acf": "5.*"
 	},
 	"require-dev": {
-		"wp-coding-standards/wpcs": "^2.*",
+		"wp-coding-standards/wpcs": "2.*",
 		"dealerdirect/phpcodesniffer-composer-installer": "dev-master"
 	},
 	"minimum-stability": "dev"
