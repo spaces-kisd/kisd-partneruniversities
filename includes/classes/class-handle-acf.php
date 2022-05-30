@@ -48,7 +48,11 @@ class HandleAcf {
 			add_filter( 'acf/settings/url', array( $this, 'my_acf_settings_url' ) );
 
 			// Include the ACF plugin.
-			include_once MY_ACF_PATH . 'acf.php';
+			if ( file_exists( MY_ACF_PATH . 'acf.php' ) ) {
+				require_once MY_ACF_PATH . 'acf.php';
+			} else {
+				error_log( "ACF is not available. It can (also) be installed via composer" );
+			}
 		}
 
 		add_filter( 'option_active_plugins', array( $this, 'disable_acf_on_frontend' ) );
