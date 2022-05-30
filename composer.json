@@ -15,10 +15,9 @@
 			}
 		}
 	},
-	"require": {
-		"advancedcustomfields/acf": "5.9.0"
-	},
+	"require": {},
 	"require-dev": {
+		"advancedcustomfields/acf": "5.9.0",
 		"wp-coding-standards/wpcs": "2.*",
 		"dealerdirect/phpcodesniffer-composer-installer": "dev-master"
 	},
