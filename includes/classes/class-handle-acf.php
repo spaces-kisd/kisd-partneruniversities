@@ -46,11 +46,12 @@ class HandleAcf {
 			// Customize the url setting to fix incorrect asset URLs.
 			add_filter( 'acf/settings/url', array( $this, 'my_acf_settings_url' ) );
 
-			//if ( ! class_exists( 'ACF' ) ) {
-			$this->missing_acf_message();
-			//}
-		} else {
-			acf_add_local_field_group( $fields );
+			// Include the ACF plugin.
+			if ( file_exists( MY_ACF_PATH . 'acf.php' ) ) {
+				require_once MY_ACF_PATH . 'acf.php';
+			} else {
+				error_log( "ACF is not available. It can (also) be installed via composer" );
+			}
 		}
 
 		add_filter( 'option_active_plugins', array( $this, 'disable_acf_on_frontend' ) );

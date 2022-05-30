@@ -1,5 +1,26 @@
 {
 	"name": "spaces-kisd/kisd-partneruniversities",
 	"type": "wordpress-theme",
+	"repositories": {
+		"acf": {
+			"type": "package",
+			"package": {
+				"name": "advancedcustomfields/acf",
+				"version": "5.9.0",
+				"source": {
+					"url": "https://github.com/AdvancedCustomFields/acf",
+					"type": "git",
+					"reference": "master"
+				}
+			}
+		}
+	},
+	"require": {
+		"advancedcustomfields/acf": "5.*"
+	},
+	"require-dev": {
+		"wp-coding-standards/wpcs": "^2.*",
+		"dealerdirect/phpcodesniffer-composer-installer": "dev-master"
+	},
 	"minimum-stability": "dev"
 }

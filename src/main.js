@@ -1,5 +1,6 @@
 /* tslint:disable */
 import Vue from 'vue';
+window.Vue = Vue;
 import * as _ from 'lodash';
 import './assets/css/styles.css';
 
