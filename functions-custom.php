@@ -296,7 +296,7 @@ function register_routes() {
 		array( 'post', 'solution', 'page' ),
 		'full_name',
 		array(
-			'get_callback'    => 'full_name',
+			'get_callback'    => 'get_full_name',
 			'update_callback' => null,
 			'schema'          => null,
 		)
