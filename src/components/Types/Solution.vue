@@ -8,8 +8,12 @@
     class="solution-card"
   >
     <md-card-header>
-      <div class="card-title md-display-1">{{ fProps.title }}</div>
-      <div class="card-full-name md-subheading">{{ fProps.full_name }}</div>
+      <div class="card-title md-display-1">
+        {{ fProps.title }}
+      </div>
+      <div class="card-full-name md-subheading">
+        {{ fProps.full_name }}
+      </div>
     </md-card-header>
     <md-card-content>
       <md-card-area v-if="postCats">
@@ -31,7 +35,10 @@
       <md-card-area>
         <span v-if="fProps.website">
           <md-icon>language</md-icon>
-          <a :href="fProps.website" target="_blank">{{ fProps.website }}</a>
+          <a
+            :href="fProps.website"
+            target="_blank"
+          >{{ fProps.website }}</a>
         </span>
       </md-card-area>
       <md-card-area>

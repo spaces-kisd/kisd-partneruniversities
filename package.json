@@ -8,11 +8,10 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "core-js": "^3.6.5",
     "lodash": "^4.17.20",
     "mapbox-gl": "^1.10.1",
-    "swiper": "^8.1.6",
+    "swiper": "^12",
     "vue": "^2.*",
     "vue-class-component": "^7.2.3",
     "vue-material": "^1.0.0-beta-15",

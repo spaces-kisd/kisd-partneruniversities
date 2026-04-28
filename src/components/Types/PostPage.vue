@@ -13,11 +13,16 @@
     :feature_img="localContent.feature.large"
   >
     <md-card-header v-if="localContent">
-      <div class="md-display-1">{{ localContent.title.rendered }}</div>
+      <div class="md-display-1">
+        {{ localContent.title.rendered }}
+      </div>
     </md-card-header>
 
     <md-card-content>
-      <post-content :content="localContent.content.rendered" :options="{showAuthor: 'eee'}"/>
+      <post-content
+        :content="localContent.content.rendered"
+        :options="{showAuthor: 'eee'}"
+      />
     </md-card-content>
   </content-card>
 </template>

@@ -3,12 +3,16 @@
     md-with-hover
     @click.native="router.push(feature.properties.link_relative)"
     md-text-scrim
-    v-bind:class="selected ? 'md-elevation-24-not': 'else'"
-    class="swiper-card"
+    :class="selected ? 'md-elevation-24-not': 'else'"
+    class="card swiper-card"
   >
     <md-card-media-cover md-text-scrim>
       <md-card-media md-ratio="16:9">
-        <img v-if="feature.properties.thumbnail" :src="feature.properties.thumbnail" alt="Skyscraper">
+        <img
+          v-if="feature.properties.thumbnail"
+          :src="feature.properties.thumbnail"
+          alt="Skyscraper"
+        >
       </md-card-media>
 
       <md-card-area>

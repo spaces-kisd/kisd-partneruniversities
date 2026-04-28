@@ -3,8 +3,15 @@
     <div v-for="category in categories">
       <div>
         <!-- https://vuematerial.io/components/chips -->
-        <a v-if="getCat(category)" :href="getCat(category).link">
-          <md-chip :class="[getCat(category).slug, 'category']" :title="getCat(category).description" md-clickable>{{ unescape(getCat(category).name) }}</md-chip>
+        <a
+          v-if="getCat(category)"
+          :href="getCat(category).link"
+        >
+          <md-chip
+            :class="[getCat(category).slug, 'category']"
+            :title="getCat(category).description"
+            md-clickable
+          >{{ unescape(getCat(category).name) }}</md-chip>
         </a>
       </div>
     </div>

@@ -1,30 +1,52 @@
 <template>
   <content-card>
     <md-card-header>
-      <div v-if="currentCategory" class="card-title md-display-1">{{unescape(currentCategory.name)}}</div>
+      <div
+        v-if="currentCategory"
+        class="card-title md-display-1"
+      >
+        {{ unescape(currentCategory.name) }}
+      </div>
     </md-card-header>
     <md-card-content>
       <md-card-area>
-        <p v-if="currentCategory">{{currentCategory.description}}</p>
+        <p v-if="currentCategory">
+          {{ currentCategory.description }}
+        </p>
         <!-- <md-divider v-if="currentCategory.description"/> -->
       </md-card-area>
     </md-card-content>
-    <md-list v-if="categoryPosts" class="cat-posts md-triple-line">
-      <md-list-item v-for="item, key in categoryPosts" :key="item.id" :to="item.link_relative">
+    <md-list
+      v-if="categoryPosts"
+      class="cat-posts md-triple-line"
+    >
+      <md-list-item
+        v-for="item, key in categoryPosts"
+        :key="item.id"
+        :to="item.link_relative"
+      >
         <!--             <md-avatar>
               <img class="cat-feature" v-if="item.feature" :src="item.feature">
         </md-avatar>-->
-        <div class="cat-feature-container" v-if="item.feature">
-          <img class="cat-feature" :src="item.feature.thumbnail" />
+        <div
+          class="cat-feature-container"
+          v-if="item.feature"
+        >
+          <img
+            class="cat-feature"
+            :src="item.feature.thumbnail"
+          >
         </div>
         <!--             <div class="cat-feature-text">
               <a class="md-subheading" :href="item.link">{{item.title.rendered}}</a>
               <div v-html="item.excerpt.rendered"></div>
         </div>-->
         <div class="md-list-item-text">
-          <div class="md-title">{{item.title.rendered}}</div>
-          <span v-if="item.full_name">{{item.full_name}}</span>
-          <div v-html="item.excerpt.rendered"></div>
+          <div class="md-title">
+            {{ item.title.rendered }}
+          </div>
+          <span v-if="item.full_name">{{ item.full_name }}</span>
+          <div v-html="item.excerpt.rendered" />
           <!-- <p>I'll be in your neighborhood doing errands this week. Do you want to meet?</p> -->
         </div>
       </md-list-item>

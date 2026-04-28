@@ -1,22 +1,36 @@
 <template>
-  <md-drawer v-on:update:mdActive="active" :md-active="visible" class="md-scrollbar">
-    <div class="wrapper" v-if="myFrontPage">
-      <div class="drawer-thumbnail" v-if="myFrontPage.thumbnail" :style="{ backgroundImage: `url('${myFrontPage.thumbnail}')` }">
+  <md-drawer
+    @update:mdActive="active"
+    :md-active="visible"
+    class="md-scrollbar"
+  >
+    <div
+      class="wrapper"
+      v-if="myFrontPage"
+    >
+      <div
+        class="drawer-thumbnail"
+        v-if="myFrontPage.thumbnail"
+        :style="{ backgroundImage: `url('${myFrontPage.thumbnail}')` }"
+      >
         <!-- <img :src="myFrontPage.thumbnail"> -->
       </div>
       <div class="drawer-content">
-        <div class="md-display-2 drawer-title">{{myFrontPage.post_title}}</div>
+        <div class="md-display-2 drawer-title">
+          {{ myFrontPage.post_title }}
+        </div>
         <post-content
           class="md-subheading"
           :content="myFrontPage.post_content"
           :options="{showAuthor: 'eee'}"
         />
-
       </div>
     </div>
-    <div v-else><md-list />Loading...</div>
+    <div v-else>
+      <md-list />Loading...
+    </div>
     <!-- <recent-posts :limit="10" /> -->
-    <SiteFooter/>
+    <SiteFooter />
   </md-drawer>
 </template>
 
