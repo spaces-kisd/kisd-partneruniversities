@@ -1,23 +1,29 @@
 <template>
   <!-- ... -->
-  <div v-bind:class="['swiper-container my-swiper' ]">
+  <div
+    ref="swiperRoot"
+    :class="['swiper swiper-container my-swiper' ]"
+  >
     <div class="swiper-wrapper">
       <!-- It is important to set "left" style prop on every slide -->
       <div
         v-for="(item, key) in getVisibleFeatures"
         :key="key"
         style="left:0"
-        v-bind:class="[{ 'swiper-slide-active': isActiveSlide(key) }, 'swiper-slide', { 'hidden' : isHidden } ]"
+        :class="[{ 'swiper-slide-active': isActiveSlide(key) }, 'swiper-slide', { 'hidden' : isHidden } ]"
       >
-        <swiper-card :index="key" :feature="item"></swiper-card>
+        <swiper-card
+          :index="key"
+          :feature="item"
+        />
       </div>
     </div>
   </div>
   <!-- ... -->
 </template>
 <script>
-/* import "swiper/dist/css/swiper.css";
-import Swiper from "swiper/dist/js/swiper.esm.bundle"; */
+import Swiper from 'swiper/bundle';
+import 'swiper/css/bundle';
 import { mapGetters, mapState, mapMutations } from 'vuex'
 import SwiperCard from './SwiperCard.vue'
 import * as types from '../../store/mutation-types'
@@ -26,10 +32,12 @@ export default {
   data () {
     return {
       swiper: false,
-      isHidden: true,
-      virtualData: {
-        slides: []
-      }
+      isHidden: true
+    }
+  },
+  beforeDestroy () {
+    if (this.swiper && this.swiper.destroy) {
+      this.swiper.destroy(true, true)
     }
   },
   mounted () {
@@ -67,43 +75,32 @@ export default {
   methods: {
     initSwiper (features) {
       const self = this
+      const swiperRoot = self.$refs.swiperRoot
+
+      if (!swiperRoot) {
+        return
+      }
 
       /** wait until vue has actually rendered the features. */
       // console.log('initSwiper', features, self.swiperDirection)
-      self.swiper = new Swiper('.swiper-container', {
-        init: true, // init things later...
+      self.swiper = new Swiper(swiperRoot, {
         speed: 400,
         spaceBetween: 0,
         slidesPerView: 'auto',
-        centeredSlides: 'true',
-        slidesPerColumnFill: 'column',
-        virtual: {
-          slides: self.getVisibleFeatures,
-          renderExternal (data) {
-            // assign virtual slides data
-            self.virtualData = data
-          }
-        },
-        /* slideActiveClass: "swiper-slide-active", */
+        centeredSlides: true,
         direction: self.swiperDirection,
-        // loop: true, // @see https://github.com/surmon-china/vue-awesome-swiper/issues/440.
         lazy: {
           loadPrevNext: true
         },
-        mousewheelSensitivity: 2,
         mousewheel: {
           invert: true,
           forceToAxis: true
-        }
-        /* slideToClickedSlide: "true", */
-        /*       breakpoints: {
-          1024: {
-            direction: "horizontal"
-          },
-          9000: {
-            direction: "vertical"
+        },
+        on: {
+          slideChange () {
+            self.$store.commit(types.FEATURE_SELECTED, self.swiper.realIndex)
           }
-        }, */
+        }
       })
 
       setTimeout(() => {
@@ -112,12 +109,9 @@ export default {
         console.log('show swiper')
       }, 1000)
 
-      // self.swiper.init();
-      self.swiper.slideTo(3)
-
-      self.swiper.on('slideChange', () => {
-        self.$store.commit(types.FEATURE_SELECTED, self.swiper.realIndex)
-      })
+      if (self.swiper && self.swiper.slideTo) {
+        self.swiper.slideTo(3)
+      }
     },
     isActiveSlide (index) {
       return index == this.swiper.realIndex
@@ -125,14 +119,16 @@ export default {
   },
   watch: {
     getAllFeatures (features) {
+      if (!features || !features.length) {
+        return
+      }
       if (this.swiper) {
         console.log('already setup')
         return
       }
-      const self = this
-      setTimeout(() => {
-        self.initSwiper(features)
-      }, 80)
+      this.$nextTick(() => {
+        this.initSwiper(features)
+      })
     },
     swiperDirection (val) {
       console.log('changed to', val, this.swiper)

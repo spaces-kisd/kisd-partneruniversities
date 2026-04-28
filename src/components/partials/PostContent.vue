@@ -1,5 +1,8 @@
 <template>
-  <md-content class="post-content" v-html="content"></md-content>
+  <md-content
+    class="post-content"
+    v-html="content"
+  />
 </template>
 
 <script>

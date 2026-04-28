@@ -1,129 +1,97 @@
 <?php
 /**
  * Assign users to posts.
- * A users with an account can (un-)assign herself.
- *
+ * A user with an account can (un-)assign herself.
  * List all users who are assigned to a post.
  *
  * @package
  */
 class Users_On_Post {
 
-	/**
-	 * Manage the ajax request.
-	 *
-	 * @return void
-	 */
-	public static function ajax() {
-		// Validate nonce.
-		if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'wp_rest' ) ) {
+	public static function ajax(): void {
+		if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['nonce'] ) ), 'wp_rest' ) ) {
 			wp_send_json_error( 'Invalid nonce.' );
 		}
 
-		// Validate tasks.
-		$valid_tasks = array( 'get_all_users', 'add_user', 'remove_user' );
-		$task = isset( $_GET['task'] ) ? $_GET['task'] : '';
-		if ( ! in_array( $task, $valid_tasks ) ) {
-			wp_send_json_error( 'Invalid action.' );
-		}
+		$task    = isset( $_GET['task'] ) ? sanitize_key( $_GET['task'] ) : '';
+		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : 0;
+		$user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
 
-		// Validate post ID.
-		$post_id = isset( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
 		if ( ! $post_id ) {
-			wp_send_json_error( 'Empty post id.' );
+			wp_send_json_error( 'Invalid post ID.' );
 		}
 
-		// Validate user ID (if necessary)
-		$user_id = isset( $_GET['user_id'] ) ? (int) $_GET['user_id'] : 0;
-		if ( in_array( $task, array( 'add_user', 'remove_user' ) ) ) {
-			if ( ! $user_id ) {
-				wp_send_json_error( 'User ID can not be empty while adding or removing users.' );
-			}
-			if ( $user_id !== get_current_user_id() ) {
-				wp_send_json_error( 'You can only add or remove yourself.' );
-			}
-		}
+		switch ( $task ) {
+			case 'get_all_users':
+				wp_send_json_success( self::get_all_users( $post_id ) );
 
-		$data = self::$task( $post_id, $user_id );
-		if ( is_wp_error( $data ) ) {
-			wp_send_json_error( $data->get_error_message() );
-		} else {
-			wp_send_json_success( $data );
-		}
+			case 'add_user':
+			case 'remove_user':
+				if ( ! $user_id ) {
+					wp_send_json_error( 'Missing user ID.' );
+				}
+				if ( 'add_user' === $task && $user_id !== get_current_user_id() ) {
+					wp_send_json_error( 'You can only add yourself.' );
+				}
+				if ( 'remove_user' === $task && $user_id !== get_current_user_id() && ! is_super_admin() ) {
+					wp_send_json_error( 'You can only remove yourself.' );
+				}
+				if ( 'add_user' === $task ) {
+					self::add_user( $post_id, $user_id );
+				} else {
+					self::remove_user( $post_id, $user_id );
+				}
+				wp_send_json_success( self::get_all_users( $post_id ) );
 
+			default:
+				wp_send_json_error( 'Invalid task.' );
+		}
 	}
 
-	/**
-	 * Lists all users that are assigned to a post.
-	 * @todo WIP
-	 *
-	 * @param int $post_id
-	 * @param int $user_id
-	 * @return array|WP_Error
-	 */
-	public static function get_all_users( int $post_id, int $user_id = 0 ) {
-		$users = get_field( 'students', $post_id );
-		foreach ($users as $user) {
-			$user['user_profile_url'] =  spaces()->blogs_profile->get_profile_url( $user['ID'] );
-			$usersnew[] =$user; 
+	private static function get_all_users( int $post_id ): array {
+		$users = get_field( 'students', $post_id, false );
+		if ( empty( $users ) ) {
+			return array();
 		}
-		return $usersnew;
+
+		$user_ids = is_array( $users ) ? $users : array( $users );
+
+		return array_values(
+			array_filter(
+				array_map(
+					fn( $user_id ) => self::get_user_data( (int) $user_id ),
+					$user_ids
+				)
+			)
+		);
 	}
 
-	/**
-	 * Add a user to a post.
-	 * @todo WIP
-	 *
-	 * @param int $post_id
-	 * @param int $user_id
-	 * @return bool|WP_Error
-	 */
-	public static function add_user( int $post_id, int $user_id ) {
-		$userexists = 0;
-		$users = get_field( 'students', $post_id, FALSE);
-		if (!empty ($users)) {
-			foreach ($users as $user) {
-				if ($user ==  $user_id){
-					$userexists = 1;
-					break;
-				}
-				else {
-					$userexists = 0;
-				}
-			}
+	private static function get_user_data( int $user_id ): ?array {
+		$user = get_userdata( $user_id );
+
+		if ( ! $user instanceof WP_User ) {
+			return null;
 		}
-		else {
-			$users = array();
-		}
-		if ($userexists != 1) {
+
+		return array(
+			'ID'               => $user->ID,
+			'display_name'     => $user->display_name,
+			'user_profile_url' => spaces()->blogs_profile->get_profile_url( $user->ID ),
+			'user_avatar'      => get_avatar_url( $user->ID ),
+		);
+	}
+
+	private static function add_user( int $post_id, int $user_id ): void {
+		$users = get_field( 'students', $post_id, false ) ?: array();
+		if ( ! in_array( $user_id, $users, true ) ) {
 			$users[] = $user_id;
-			// Update with new value.
 			update_field( 'students', $users, $post_id );
 		}
-	
-}
+	}
 
-	/**
-	 * Remove a user from a post.
-	 * @todo WIP
-	 *
-	 * @param int $post_id
-	 * @param int $user_id
-	 * @return bool|WP_Error
-	 */
-	public static function remove_user( int $post_id, int $user_id ) {
-		// Get the current value.
-		$users = get_field( 'students', $post_id, FALSE);
-		if (!empty ($users)) {
-			foreach ($users as $key => $user) {
-				if ( $user == $user_id ) {
-					unset($users[$key]);
-					break;
-				}
-			}
-		}
-		// Update with new value.
+	private static function remove_user( int $post_id, int $user_id ): void {
+		$users = get_field( 'students', $post_id, false ) ?: array();
+		$users = array_values( array_filter( $users, fn( $id ) => $id !== $user_id ) );
 		update_field( 'students', $users, $post_id );
-		
 	}
 }

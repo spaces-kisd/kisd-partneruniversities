@@ -1,5 +1,4 @@
-import axios from 'axios'
-import api from '../../api'
+import api, { wpFetch } from '../../api'
 import * as types from '../mutation-types'
 
 // initial state
@@ -14,7 +13,7 @@ const state = {
 
 // getters
 const getters = {
-  getAllFeatures: (state) => state.collection.features,
+  getAllFeatures: (state) => (state.collection && state.collection.features) || [],
   getSelected: (state) => state.selected,
   getSelectedFeature: (state) => state.collection.features[state.selected],
   getVisibleFeatureIds: (state) => state.visible,
@@ -65,10 +64,36 @@ const getters = {
 // actions
 const actions = {
   getFeatureCollection ({ commit }) {
-    axios
-      .get('/wp-json/map/v1/features/solution')
-      .then((response) => {
-        const features = response.data
+    wpFetch('wp/v2/solutions?per_page=100')
+      .then((posts) => {
+        const features = {
+          type: 'FeatureCollection',
+          features: posts
+            .filter((p) => p.location)
+            .map((p) => ({
+              type: 'Feature',
+              properties: {
+                post_id: p.id,
+                feature_id: p.id,
+                slug: p.slug,
+                title: p.title.rendered,
+                full_name: p.full_name,
+                priority: p.priority || 5,
+                thumbnail: p.feature ? p.feature.thumbnail : null,
+                location_name: p.location_name,
+                deadline: p.deadline,
+                website: p.website,
+                contact: p.contact,
+                erasmus_code: p.erasmus_code,
+                department: p.department,
+                link_relative: p.link_relative
+              },
+              geometry: {
+                type: 'Point',
+                coordinates: [p.location.lng, p.location.lat]
+              }
+            }))
+        }
         commit(types.STORE_FETCHED_FEATURES, { features })
         commit(types.INCREMENT_LOADING_PROGRESS)
         commit(types.FEATURES_LOADED, true)

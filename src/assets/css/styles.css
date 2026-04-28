@@ -7,3 +7,7 @@
 @import './_tailwind';
 @import './components/progress-bar';
 */
+
+.md-card {
+  border-radius: var(--f-radius) !important;
+}

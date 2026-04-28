@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="['progress loader', {loading: showLoader }]">
+  <div :class="['progress loader', {loading: showLoader }]">
     <div
       class="progress-bar"
       role="progressbar"
@@ -7,7 +7,7 @@
       aria-valuenow="100"
       aria-valuemin="0"
       aria-valuemax="100"
-    ></div>
+    />
   </div>
 </template>
 

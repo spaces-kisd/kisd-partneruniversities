@@ -1,5 +1,8 @@
 <template>
-  <div id="my-app" :class="['page-wrapper', horizontalOrVertial]">
+  <div
+    id="my-app"
+    :class="['page-wrapper', horizontalOrVertial]"
+  >
     <transition
       name="loader-animation"
       enter-active-class="animated fadeIn"
@@ -8,25 +11,36 @@
       <progress-bar />
     </transition>
     <drawer :visible="visible_drawer" />
-  <a :href="'https://spaces.kisd.de'" target="_self">
-    <div :class="['logo-container top', { hidden : visible_drawer }]" style="z-index:1">
-      <md-button
-        aria-label="main-menu-button"
-        class="md-icon-button md-raised md-primary">
+    <a
+      :href="'https://spaces.kisd.de'"
+      target="_self"
+    >
+      <div
+        :class="['logo-container top', { hidden : visible_drawer }]"
+        style="z-index:1"
+      >
+        <md-button
+          aria-label="main-menu-button"
+          class="button md-icon-button md-raised md-primary"
+        >
           <!-- @click.native="router.push = 'https://spaces.kisd.de'" -->
-        <md-icon>menu</md-icon>
-      </md-button>
+          <md-icon>menu</md-icon>
+        </md-button>
       <!-- md-display-1 -->
-    </div>
+      </div>
     </a>
     <div class="content-extend">
-      <transition name="fade-slide-left" mode="out-in" appear>
-        <router-view :key="$route.params.postSlug"></router-view>
+      <transition
+        name="fade-slide-left"
+        mode="out-in"
+        appear
+      >
+        <router-view :key="$route.params.postSlug" />
       </transition>
     </div>
 
     <!-- <transition name="fade" mode="out-in"> -->
-    <swiper v-bind:swiperDirection="horizontalOrVertial" />
+    <swiper :swiper-direction="horizontalOrVertial" />
     <!-- </transition> -->
 
     <solution-map />

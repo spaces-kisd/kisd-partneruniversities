@@ -310,6 +310,21 @@ function register_routes() {
 			'schema'          => null,
 		)
 	);
+
+	$acf_fields = array( 'location', 'location_name', 'deadline', 'website', 'contact', 'erasmus_code', 'department' );
+	foreach ( $acf_fields as $field_name ) {
+		register_rest_field(
+			'solution',
+			$field_name,
+			array(
+				'get_callback'    => function( $object ) use ( $field_name ) {
+					return get_field( $field_name, $object['id'] );
+				},
+				'update_callback' => null,
+				'schema'          => null,
+			)
+		);
+	}
 }
 
 function get_frontpage( $request ) {

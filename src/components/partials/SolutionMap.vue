@@ -1,12 +1,12 @@
 <template>
-  <div id="map"></div>
+  <div id="map" />
 </template>
 
 <script>
-import axios from 'axios'
 /* import mapboxgl from "mapbox-gl";
 window.mapboxgl = mapboxgl; */
 import { mapGetters, mapState, mapMutations } from 'vuex'
+import { wpFetch } from '../../api'
 import MapConfig from './SolutionMapHelper.js'
 import * as types from '../../store/mutation-types'
 import * as _ from 'lodash'
@@ -46,10 +46,39 @@ export default {
     /* var types = types; */
     comp.myMap.on('sourcedata', sourceCallback)
 
-    axios.get('/wp-json/map/v1/features/solution').then((response) => {
-      sourceData = response.data
-      sourceCallback()
-    })
+    wpFetch('wp/v2/solutions?per_page=100')
+      .then((posts) => {
+        sourceData = {
+          type: 'FeatureCollection',
+          features: posts
+            .filter((p) => p.location)
+            .map((p) => ({
+              type: 'Feature',
+              properties: {
+                post_id: p.id,
+                feature_id: p.id,
+                slug: p.slug,
+                title: p.title.rendered,
+                full_name: p.full_name,
+                priority: p.priority || 5,
+                thumbnail: p.feature ? p.feature.thumbnail : null,
+                location_name: p.location_name,
+                deadline: p.deadline,
+                website: p.website,
+                contact: p.contact,
+                erasmus_code: p.erasmus_code,
+                department: p.department,
+                link_relative: p.link_relative
+              },
+              geometry: {
+                type: 'Point',
+                coordinates: [p.location.lng, p.location.lat]
+              }
+            }))
+        }
+        sourceCallback()
+      })
+      .catch((e) => console.log('Failed to fetch solution features:', e))
 
     function sourceCallback (e) {
       if (comp.myMap.isStyleLoaded() && !added && !_.isEmpty(sourceData)) {

@@ -1,12 +1,15 @@
 <template>
   <transition name="fade">
-    <footer v-if="footer" class="site-footer" v-html="footer"></footer>
+    <footer
+      v-if="footer"
+      class="site-footer"
+      v-html="footer"
+    />
   </transition>
 </template>
 
 <script>
-import axios from 'axios'
-import SETTINGS from '../../settings'
+import { wpFetch } from '../../api'
 
 export default {
   data () {
@@ -20,10 +23,9 @@ export default {
   },
   methods: {
     getFooter () {
-      axios
-        .get('/wp-json/map/v1/menus/' + 'footer')
-        .then((response) => {
-          this.footer = response.data
+      wpFetch('map/v1/menus/footer')
+        .then((data) => {
+          this.footer = data
         })
         .catch((e) => {
           console.log(e)

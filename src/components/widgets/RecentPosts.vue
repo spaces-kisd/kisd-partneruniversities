@@ -1,14 +1,18 @@
 <template>
   <div class="widget recent-posts">
     <h3>
-      <slot></slot>
+      <slot />
     </h3>
-    <ul >
-      <li v-for="post in recentPosts(limit)" :key="post.id">
-        <router-link :to="post.slug">{{ post.title.rendered }}</router-link>
+    <ul>
+      <li
+        v-for="post in recentPosts(limit)"
+        :key="post.id"
+      >
+        <router-link :to="post.slug">
+          {{ post.title.rendered }}
+        </router-link>
       </li>
     </ul>
-
   </div>
 </template>
 
