@@ -63,9 +63,8 @@
           <b>Application deadline:</b> {{ fProps.deadline }}
         </span>
       </md-card-area>
-      <md-card-area>
-        <users-on-post :post-id="fProps.post_id" />
-      </md-card-area>
+      <!-- UsersOnPost renders its own .md-card-area, and only for logged-in users. -->
+      <users-on-post :post-id="fProps.post_id" />
     </md-card-content>
   </content-card>
 </template>

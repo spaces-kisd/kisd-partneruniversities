@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="ready"
+    v-if="ready && isLoggedIn"
     class="md-card-area users solution-props"
   >
     <b v-if="users.length === 0">No users connected to this school yet.</b>
@@ -25,7 +25,16 @@
             width="40"
             loading="lazy"
           >
-          <span class="avatar-leave"><i class="md-icon md-icon-font md-theme-z">close</i></span>
+          <span class="avatar-leave">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            ><path
+              fill="currentColor"
+              d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            /></svg>
+          </span>
           <span class="avatar-label">{{ user.display_name }}</span>
         </button>
 
@@ -43,7 +52,16 @@
             width="40"
             loading="lazy"
           >
-          <span class="avatar-leave"><i class="md-icon md-icon-font md-theme-z">close</i></span>
+          <span class="avatar-leave">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            ><path
+              fill="currentColor"
+              d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            /></svg>
+          </span>
           <span class="avatar-label">{{ user.display_name }}</span>
         </button>
 
@@ -75,7 +93,14 @@
           class="avatar-btn avatar-join"
           @click="doUserAction('add_user', currentUserId)"
         >
-          <i class="md-icon md-icon-font md-theme-z">person_add</i>
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          ><path
+            fill="currentColor"
+            d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-1V8H4v3H1v2h3v3h2v-3h3v-2H6zm9 3c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+          /></svg>
           <span class="avatar-label">Add me</span>
         </button>
       </li>
@@ -101,6 +126,9 @@ export default {
     error: ''
   }),
   computed: {
+    isLoggedIn () {
+      return !!vueWp.isLoggedIn
+    },
     currentUserId () {
       return vueWp.currentUserId || 0
     },
@@ -113,16 +141,28 @@ export default {
     }
   },
   mounted () {
-    this.request('get_all_users').then(users => {
-      this.users = users
-      this.ready = true
-    })
+    // Student data is private: only fetch/show it to logged-in users.
+    if (!this.isLoggedIn) {
+      return
+    }
+    // Only reveal the block once the server actually returns the data.
+    // A logged-out (or cached-as-logged-in) request fails and stays hidden.
+    this.request('get_all_users')
+      .then(users => {
+        this.users = users
+        this.ready = true
+      })
+      .catch(() => {
+        this.ready = false
+      })
   },
   methods: {
     doUserAction (task, userId) {
-      this.request(task, userId).then(users => {
-        this.users = users
-      })
+      this.request(task, userId)
+        .then(users => {
+          this.users = users
+        })
+        .catch(() => {})
     },
     request (task, userId = this.currentUserId) {
       const params = new URLSearchParams({
@@ -135,9 +175,11 @@ export default {
       return fetch(`${vueWp.ajaxUrl}?${params}`)
         .then(res => res.json())
         .then(data => {
-          if (!data.success) {
-            this.error = data.data
-            return []
+          // admin-ajax returns `0` for an unauthenticated request, and our
+          // handler returns { success: false } when not logged in.
+          if (!data || !data.success) {
+            this.error = (data && data.data) || 'Request failed.'
+            throw new Error(this.error)
           }
           this.error = ''
           return data.data
@@ -242,7 +284,14 @@ ul {
   opacity: 1;
 }
 
-.avatar-join .md-icon {
-  font-size: 18px;
+.icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.avatar-join .icon {
+  width: 18px;
+  height: 18px;
 }
 </style>

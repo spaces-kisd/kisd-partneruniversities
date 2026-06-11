@@ -8,6 +8,21 @@
       <img :src="feature_img">
     </md-card-media>
     <md-button
+      v-if="edit_url"
+      :href="unescape(edit_url)"
+      title="Edit this page"
+      class="button md-primary md-mini md-fab md-fab-top-right edit"
+    >
+      <svg
+        class="edit-icon"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      ><path
+        fill="currentColor"
+        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+      /></svg>
+    </md-button>
+    <md-button
       @click.native="router.push('/')"
       class="button md-primary md-plain md-mini md-fab md-fab-top-right close"
     >
@@ -27,13 +42,6 @@
       />
     </transition>
     <md-card-actions>
-      <md-button
-        class="button"
-        v-if="edit_url"
-        :href="unescape(edit_url)"
-      >
-        Edit
-      </md-button>
       <md-button
         class="button"
         @click.native="router.push('/')"
@@ -102,6 +110,16 @@ export default {
   top: 15px;
 }
 
+/* sit the edit FAB just to the left of the close FAB */
+.content-card .md-fab.edit {
+  right: 65px;
+}
+
+.content-card .md-fab.edit .edit-icon {
+  width: 20px;
+  height: 20px;
+}
+
 .md-chip {
   margin: 0 5px 6px 0 !important;
 }
@@ -135,7 +153,8 @@ export default {
     padding-top: 25px;
     margin-right: 0px !important;
   }
-  .close {
+  .close,
+  .edit {
     top: -20px !important;
   }
 }
