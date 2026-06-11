@@ -51,6 +51,7 @@ function load_vue_scripts() {
 			'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
 			'restUrl'  => rest_url(),
 			'path'     => $path,
+			'isLoggedIn'     => is_user_logged_in(),
 			'currentUserId'  => get_current_user_id(),
 			'isSuperAdmin'   => is_super_admin(),
 		)

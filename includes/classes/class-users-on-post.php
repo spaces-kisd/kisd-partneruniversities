@@ -13,6 +13,12 @@ class Users_On_Post {
 			wp_send_json_error( 'Invalid nonce.' );
 		}
 
+		// Student data is private. The 'wp_rest' nonce is also issued to logged-out
+		// visitors (uid 0), so require an actual login before exposing any of it.
+		if ( ! is_user_logged_in() ) {
+			wp_send_json_error( 'You must be logged in.' );
+		}
+
 		$task    = isset( $_GET['task'] ) ? sanitize_key( $_GET['task'] ) : '';
 		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : 0;
 		$user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
