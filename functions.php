@@ -73,7 +73,14 @@ function load_vue_scripts() {
 		filemtime( get_stylesheet_directory() . $subdir_file )
 	);
 
-	wp_enqueue_style( 'material-icons', 'https://fonts.googleapis.com/icon?family=Material+Icons#asyncload', array() );
+	// Self-hosted Material Icons — no request to fonts.googleapis.com (DSGVO/Drittland).
+	$mi_css = '/includes/css/material-icons.css';
+	wp_enqueue_style(
+		'material-icons',
+		get_stylesheet_directory_uri() . $mi_css,
+		array(),
+		filemtime( get_stylesheet_directory() . $mi_css )
+	);
 }
 add_action( 'wp_enqueue_scripts', 'load_vue_scripts', 100 );
 
