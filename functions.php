@@ -6,15 +6,15 @@ require_once 'functions-custom.php';
 remove_action( 'template_redirect', 'redirect_canonical' );
 
 // Redirect all requests to index.php so the Vue app is loaded and 404s aren't thrown.
-function remove_redirects() {
+function kpu_remove_redirects() {
 	add_rewrite_rule( '^/(.+)/?', 'index.php', 'top' );
 }
-add_action( 'init', 'remove_redirects' );
+add_action( 'init', 'kpu_remove_redirects' );
 
 /* function v_include_scripts( $name, $subdir_path ){} */
 
 // Load scripts.
-function load_vue_scripts() {
+function kpu_load_vue_scripts() {
 	$subdir_file = '/dist/js/chunk-vendors.js';
 	wp_enqueue_script(
 		'vuejs-js-chunk-vendors',
@@ -82,10 +82,10 @@ function load_vue_scripts() {
 		filemtime( get_stylesheet_directory() . $mi_css )
 	);
 }
-add_action( 'wp_enqueue_scripts', 'load_vue_scripts', 100 );
+add_action( 'wp_enqueue_scripts', 'kpu_load_vue_scripts', 100 );
 
 //Workaround for Spaces Editor: Should be changend
-add_action('wp_enqueue_scripts', 'disable_pluginsjs_selectively', 100 );
-function disable_pluginsjs_selectively( ) {
+add_action('wp_enqueue_scripts', 'kpu_disable_pluginsjs_selectively', 100 );
+function kpu_disable_pluginsjs_selectively( ) {
    wp_deregister_script( 'vuejs');
 }

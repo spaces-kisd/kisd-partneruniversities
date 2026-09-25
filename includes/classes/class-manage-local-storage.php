@@ -27,7 +27,7 @@ class MangeLocalStorage {
 	public function maybe_update_cookie() {
 
 		// we are not interested in ajax/cron/rest/admin requests.
-		if ( wp_doing_ajax() || wp_doing_cron() || is_rest() || is_admin()  ) {
+		if ( wp_doing_ajax() || wp_doing_cron() || kpu_is_rest() || is_admin()  ) {
 			return;
 		}
 
