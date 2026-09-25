@@ -54,9 +54,9 @@ add_action( 'wp_ajax_users_on_post', 'Users_On_Post::ajax' );
 add_filter( 'load_spaces_editor_dependencies', '__return_false' );
 
 
-function cookie_update_redirect() {
+function kpu_cookie_update_redirect() {
 	// we are not interested in ajax or rest requests.
-	if ( wp_doing_ajax() || is_rest() || is_admin() ) {
+	if ( wp_doing_ajax() || kpu_is_rest() || is_admin() ) {
 		return;
 	}
 
@@ -72,11 +72,11 @@ function cookie_update_redirect() {
 		exit;
 	}
 }
-add_action( 'init', 'cookie_update_redirect' );
+add_action( 'init', 'kpu_cookie_update_redirect' );
 
 
 
-function load_scripts_styles() {
+function kpu_load_scripts_styles() {
 
 	wp_enqueue_script( 'swiper', get_stylesheet_directory_uri() . '/node_modules/swiper/swiper-bundle.min.js', array(), '8.1', true );
 	wp_enqueue_style( 'swiper-css', get_stylesheet_directory_uri() . '/node_modules/swiper/swiper.min.css', false, null );
@@ -86,15 +86,15 @@ function load_scripts_styles() {
 	}
 }
 
-add_action( 'wp_enqueue_scripts', 'load_scripts_styles', 100 );
+add_action( 'wp_enqueue_scripts', 'kpu_load_scripts_styles', 100 );
 
 $feature_transient_name = 'feature_transient';
 
-add_action( 'save_post_solution', 'delete_solution_transient' );
-add_action( 'update_post_solution', 'delete_solution_transient' );
-add_action( 'delete_post_solution', 'delete_solution_transient' );
+add_action( 'save_post_solution', 'kpu_delete_solution_transient' );
+add_action( 'update_post_solution', 'kpu_delete_solution_transient' );
+add_action( 'delete_post_solution', 'kpu_delete_solution_transient' );
 
-function delete_solution_transient() {
+function kpu_delete_solution_transient() {
 	global $feature_transient_name;
 	delete_transient( $feature_transient_name );
 }
@@ -105,7 +105,7 @@ function delete_solution_transient() {
 	 * @param [type] $data
 	 * @return void
 	 */
-function feature_collection( $data ) {
+function kpu_feature_collection( $data ) {
 	global $feature_transient_name;
 
 	$feature_collection = get_transient( $feature_transient_name );
@@ -151,7 +151,7 @@ function feature_collection( $data ) {
 							'contact'			  => get_field( 'contact' ),
 							'erasmus_code'		  => get_field( 'erasmus_code' ),
 							'department'		  => get_field( 'department' ),
-							'link_relative'       => make_link_relative_to_blog( get_permalink() ),
+							'link_relative'       => kpu_make_link_relative_to_blog( get_permalink() ),
 						),
 						'geometry'   => array(
 							'type'        => 'Point',
@@ -176,27 +176,27 @@ function feature_collection( $data ) {
 }
 
 
-function menu_callback( $data ) {
+function kpu_menu_callback( $data ) {
 	wp_nav_menu( array( 'theme_location' => $data['type'] ) );
 	die();
 }
 
-function get_full_name( $object ) {
+function kpu_get_full_name( $object ) {
 	return get_field( 'full_name', $object['id'] );
 }
 
-function get_priority( $object ) {
+function kpu_get_priority( $object ) {
 	return (int) get_field( 'priority', $object['id'] );
 }
 
-function get_feature( $object ) {
+function kpu_get_feature( $object ) {
 	return array(
 		'thumbnail' => get_the_post_thumbnail_url( $object['id'], 'thumbnail' ),
 		'large'     => get_the_post_thumbnail_url( $object['id'], 'large' ),
 	);
 }
 
-function get_edit_url( $object ) {
+function kpu_get_edit_url( $object ) {
 	return get_edit_post_link( $object['id'] );
 }
 
@@ -209,8 +209,8 @@ function get_edit_url( $object ) {
  *
  * @return mixed
  */
-function slug_get_link_relative( $object, $field_name, $request ) {
-	return make_link_relative_to_blog( $object['link'] );
+function kpu_slug_get_link_relative( $object, $field_name, $request ) {
+	return kpu_make_link_relative_to_blog( $object['link'] );
 	// return wp_make_link_relative( $object['link'] );
 }
 
@@ -222,7 +222,7 @@ function slug_get_link_relative( $object, $field_name, $request ) {
  * @param string $link absolute link.
  * @return string relative link.
  */
-function make_link_relative_to_blog( $link ) {
+function kpu_make_link_relative_to_blog( $link ) {
 	$site_url = get_site_url();
 	$new_link = str_replace( $site_url, '', $link );
 	// error_log( $new_link . ' | ' . $site_url . ' | ' . $link );
@@ -230,14 +230,14 @@ function make_link_relative_to_blog( $link ) {
 }
 
 
-add_action( 'rest_api_init', 'register_routes' );
-function register_routes() {
+add_action( 'rest_api_init', 'kpu_register_routes' );
+function kpu_register_routes() {
 	register_rest_route(
 		'map/v1',
 		'/frontpage/',
 		array(
 			'methods'  => 'GET',
-			'callback' => 'get_frontpage',
+			'callback' => 'kpu_get_frontpage',
 			'permission_callback' => '__return_true',
 		)
 	);
@@ -249,7 +249,7 @@ function register_routes() {
 		// '/features',
 		array(
 			'methods'  => 'GET',
-			'callback' => 'feature_collection',
+			'callback' => 'kpu_feature_collection',
 			'permission_callback' => '__return_true',
 		)
 	);
@@ -260,7 +260,7 @@ function register_routes() {
 		'/menus/(?P<type>.+)',
 		array(
 			'methods'  => 'GET',
-			'callback' => 'menu_callback',
+			'callback' => 'kpu_menu_callback',
 			'permission_callback' => '__return_true',
 		)
 	);
@@ -269,7 +269,7 @@ function register_routes() {
 		array( 'post', 'solution', 'page' ),
 		'link_relative',
 		array(
-			'get_callback'    => 'slug_get_link_relative',
+			'get_callback'    => 'kpu_slug_get_link_relative',
 			'update_callback' => null,
 			'schema'          => null,
 		)
@@ -278,7 +278,7 @@ function register_routes() {
 		array( 'post', 'solution', 'page' ),
 		'edit_url',
 		array(
-			'get_callback'    => 'get_edit_url',
+			'get_callback'    => 'kpu_get_edit_url',
 			'update_callback' => null,
 			'schema'          => null,
 		)
@@ -287,7 +287,7 @@ function register_routes() {
 		array( 'post', 'solution', 'page' ),
 		'feature',
 		array(
-			'get_callback'    => 'get_feature',
+			'get_callback'    => 'kpu_get_feature',
 			'update_callback' => null,
 			'schema'          => null,
 		)
@@ -296,7 +296,7 @@ function register_routes() {
 		array( 'post', 'solution', 'page' ),
 		'full_name',
 		array(
-			'get_callback'    => 'get_full_name',
+			'get_callback'    => 'kpu_get_full_name',
 			'update_callback' => null,
 			'schema'          => null,
 		)
@@ -305,7 +305,7 @@ function register_routes() {
 		array( 'solution' ),
 		'priority',
 		array(
-			'get_callback'    => 'get_priority',
+			'get_callback'    => 'kpu_get_priority',
 			'update_callback' => null,
 			'schema'          => null,
 		)
@@ -327,7 +327,7 @@ function register_routes() {
 	}
 }
 
-function get_frontpage( $request ) {
+function kpu_get_frontpage( $request ) {
 	// Get the ID of the static frontpage. If not set it's 0.
 	$pid = (int) get_option( 'page_on_front' );
 
@@ -365,7 +365,7 @@ register_nav_menus(
  * @returns boolean
  * @author matzeeable
  */
-function is_rest() {
+function kpu_is_rest() {
 	$prefix = rest_get_url_prefix();
 	if ( defined( 'REST_REQUEST' ) && REST_REQUEST // (#1)
 	|| isset( $_GET['rest_route'] ) // (#2)
